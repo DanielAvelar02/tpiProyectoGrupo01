@@ -1,0 +1,40 @@
+{% extends 'base_generic.html' %} {% block title %}
+  Usuarios
+{% endblock %}
+{% block content %}
+  <h1>Gestion de Usuarios</h1>
+  <a href="{% url 'crear_usuario' %}">Crear nuevo usuario</a>
+
+  <h2>Lista de usuarios</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Correo</th>
+        <th>Rol</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for usuario in usuarios %}
+        <tr>
+          <td>{{ usuario.username }}</td>
+          <td>{{ usuario.email }}</td>
+          <td>
+            {% for group in usuario.groups.all %}
+              {{ group.name }}{% if not forloop.last %}, {% endif %}
+            {% empty %}
+              Sin rol asignado
+            {% endfor %}
+          </td>
+          <td>
+            <a href="{% url 'editar_usuario' usuario.id %}">Editar</a> |
+            <a href="{% url 'eliminar_usuario' usuario.id %}">Eliminar</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <br />
+  <a href="{% url 'inicio' %}" class="btn">Volver al inicio</a>
+{% endblock %}

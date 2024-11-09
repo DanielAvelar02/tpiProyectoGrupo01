@@ -1,0 +1,19 @@
+{% extends 'base_generic.html' %} {% block title %}
+  Editar usuario
+{% endblock %}
+{% block content %}
+  <h1>Editar usuario: {{ usuario.username }}</h1>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    {% if es_unico_admin %}
+      <p>No puedes cambiar tu propio rol porque eres el único administrador.</p>
+    {% endif %}
+
+   
+    <button type="submit">Guardar Cambios</button>
+    <a href="{% url 'listar_usuarios' %}">Cancelar</a>
+  </form>
+{% endblock %}

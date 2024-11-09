@@ -1,26 +1,18 @@
-"""
-URL configuration for gestion_pedidos project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
+# gestion_pedidos/urls.py
 from django.contrib import admin
 from django.urls import path, include
-from negocio import views  # importar las vistas
+from negocio import views as negocio_views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('negocio/', include('negocio.urls')),  # Asegúrate de que el nombre y la ruta sean correctos.
-    path('', views.home, name='home'),  # Ruta para la página de inicio
+    
+    
+    path('admin/', admin.site.urls), # ruta para el admin de Django
+    path('accounts/login/', negocio_views.custom_login, name='login'), #ruta de inicio de sesion personalizado
+    path('logout/', negocio_views.custom_logout, name='logout'),
+    path('', negocio_views.inicio, name='inicio'),  # ruta para la página de inicio
+    
+    path('negocio/', include('negocio.urls')),
+    path('admin-dashboard/', negocio_views.admin_dashboard, name='admin_dashboard'),  # Ruta para administración personalizada
 
 ]
+

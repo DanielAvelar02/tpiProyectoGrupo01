@@ -1,0 +1,63 @@
+<!-- negocio/templates/inicio.html -->
+{% extends 'base_generic.html' %} {% block title %}
+  Inicio
+{% endblock %}
+{% block content %}
+  <body>
+    <div class="user-info">
+      {% if user.is_authenticated %}
+        <h1>Bienvenido {{ nombre_usuario }}</h1>
+
+        <p>Haz clic en el botón para acceder a otras secciones:</p>
+      {% else %}
+        <h1>Bienvenido al inicio del sitio</h1>
+      {% endif %}
+    </div>
+
+    <div class="btn-container">
+      {% if user.is_authenticated %}
+        <!-- Enlace para gestionar usuarios, solo visible para administradores -->
+        {% if es_administrador %}
+          <ul>
+            <li>
+              <a href="{% url 'listar_usuarios' %}" class="btn">Gestion usuarios</a>
+            </li>
+            <li>
+              <a href="{% url 'admin_dashboard' %}" class="btn">Administración del negocio</a>
+            </li>
+            <li>
+              <a href="{% url 'lealtad' %}" class="btn">Programa de lealtad</a>
+            </li>
+          </ul>
+        {% endif %}
+
+        <!-- Enlace para el Encargado de Menú -->
+        {% if es_encargado_menu %}
+          <ul>
+            <li>
+              <a href="{% url 'listar_usuarios' %}" class="btn">Gestion usuarios</a>
+            </li>
+            <li>
+              <a href="{% url 'admin_dashboard' %}" class="btn">Administración del negocio</a>
+            </li>
+            <li>
+              <a href="{% url 'lealtad' %}" class="btn">Programa de lealtad</a>
+            </li>
+          </ul>
+        {% endif %}
+
+        <!-- Enlace para el Encargado de Registro de Pedidos -->
+        {% if es_encargado_registro %}
+
+        {% endif %}
+
+        <!-- Enlace para el Despacho de Pedidos -->
+        {% if es_despacho %}
+
+        {% endif %}
+
+        <br />
+      {% endif %}
+    </div>
+  </body>
+{% endblock %}

@@ -27,6 +27,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# settings.py
+LOGIN_URL = 'login'  # Asegura que se redirija a la URL del login personalizado
+LOGIN_REDIRECT_URL = '/'  # Redirige a la página de inicio después de un login exitoso
+LOGOUT_REDIRECT_URL = '/'
+
 
 # Application definition
 
@@ -104,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
 TIME_ZONE = 'UTC'
 
