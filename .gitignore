@@ -6,6 +6,8 @@ __pycache__/
 # Virtual Environments
 venv/
 
+*db.sqlite3
+
 # VS Code settings
 .vscode/
 
