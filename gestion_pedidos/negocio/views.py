@@ -69,7 +69,7 @@ def inicio(request):
         'tipo_usuario': tipo_usuario
     })
        
-# Vista para la configuración del negocio
+# Vista para la configuración del negocio (pendiente)
 def negocio_config(request):
     negocio = Negocio.objects.first()  # Suponemos que solo hay un negocio
     if request.method == "POST":
@@ -187,11 +187,20 @@ def lealtad(request):
 #Carlos Rauda Modificaciones INICIO
 #-------------------------------
 
+# Verificar si el usuario es Encargado de Menú
+#Comentario daniel: se agrega la funcion es_encargado_menu para verificar si el usuario es encargado de menu
+def es_encargado_menu(user):
+    return user.is_authenticated and user.groups.filter(name='Encargado de Menú').exists()
+
+@login_required #valida que el usuario este logueado
+@user_passes_test(es_encargado_menu) #valida que el usuario sea encargado de menu
 def listar_productos(request):
     productos = Producto.objects.all()
     negocio = Negocio.objects.first()
     return render(request, 'producto/listar_productos.html', {'productos': productos, 'negocio': negocio})
 
+@login_required
+@user_passes_test(es_encargado_menu)
 def crear_producto(request):
     negocio = Negocio.objects.first()  # Suponemos que solo hay un negocio
     if request.method == "POST":
