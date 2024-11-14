@@ -26,14 +26,14 @@ Productos
       <td>
         <form action="{% url 'cambiar_estado_producto' producto.id %}" method="post" style="display: inline;">
           {% csrf_token %}
-          <button type="submit">Desactivar</button>
+          <button type="submit" style="background-color: red;">Desactivar</button>
         </form>
       </td>
       {% else %}
       <td>
         <form action="{% url 'cambiar_estado_producto' producto.id %}" method="post" style="display: inline;">
           {% csrf_token %}
-          <button type="submit">Activar</button>
+          <button type="submit" style="background-color: green;">Activar</button>
         </form>
       </td>
       {% endif %}
