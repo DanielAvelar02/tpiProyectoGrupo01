@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Negocio
+from .models import Negocio, Producto
 from .forms import UsuarioForm, NegocioForm, CrearUsuarioForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
@@ -183,3 +183,42 @@ def lealtad(request):
     return render(request, 'lealtad/lealtad.html', {})
 
 
+#-------------------------------
+#Carlos Rauda Modificaciones INICIO
+#-------------------------------
+
+def listar_productos(request):
+    productos = Producto.objects.all()
+    negocio = Negocio.objects.first()
+    return render(request, 'producto/listar_productos.html', {'productos': productos, 'negocio': negocio})
+
+def crear_producto(request):
+    negocio = Negocio.objects.first()  # Suponemos que solo hay un negocio
+    if request.method == "POST":
+        nombre = request.POST.get('nombre')
+        precio = request.POST.get('precio')
+        cantidad_disponible = request.POST.get('cantidad')
+        negocio = Negocio.objects.first()
+        if nombre and precio and cantidad_disponible is not None:
+            try:
+                precio = float(precio)
+                cantidad_disponible = int(cantidad_disponible)
+            except ValueError:
+                return render(request, 'producto/crear_producto.html', {'negocio': negocio, 'error': 'El precio debe ser un número decimal y la cantidad debe ser un número entero'})
+            producto = Producto(nombre=nombre, precio=precio, cantidad_disponible=cantidad_disponible, negocio=negocio)
+            producto.save()
+            return redirect('listar_productos')
+        else:
+            return render(request, 'producto/crear_producto.html', {'negocio': negocio, 'error': 'Faltan datos'})
+    else:
+        return render(request, 'producto/crear_producto.html', {'negocio': negocio})
+        
+def cambiar_estado_producto(request, producto_id):
+    producto = get_object_or_404(Producto, id=producto_id)
+    producto.activo = not producto.activo
+    producto.save()
+    return redirect('listar_productos')
+
+#-------------------------------
+#Carlos Rauda Modificaciones FIN
+#-------------------------------

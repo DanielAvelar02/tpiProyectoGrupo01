@@ -11,4 +11,14 @@ urlpatterns = [
     path('eliminar-usuario/<int:usuario_id>/', views.eliminar_usuario, name='eliminar_usuario'),  # Eliminar usuario
     path('lealtad/', views.lealtad, name='lealtad'),  # Vista de lealtad
     
+    #-------------------------------
+    #Carlos Rauda Modificaciones INICIO
+    #-------------------------------
+    path('listar-productos/', views.listar_productos, name='listar_productos'),
+    path('crear-producto/', views.crear_producto, name='crear_producto'),
+    path('cambiar-estado-producto/<int:producto_id>/', views.cambiar_estado_producto, name='cambiar_estado_producto'),
+    #-------------------------------
+    #Carlos Rauda Modificaciones FIN
+    #-------------------------------
+    
 ]
