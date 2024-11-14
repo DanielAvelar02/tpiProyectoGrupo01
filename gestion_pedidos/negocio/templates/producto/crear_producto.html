@@ -1,0 +1,20 @@
+{% extends 'base_generic.html' %} {% block title %}
+  Productos
+{% endblock %}
+{% block content %}
+  <h1>Vista en proceso</h1>
+  <p>Crear un producto</p>
+  <h1>{{negocio.nombre}}</h1>
+  <form method="POST" action="/negocio/crear-producto/">
+    {% csrf_token %}
+    <p style="color:red">{{error}}</p>
+    <label for="name">Nombre:</label>
+    <input type="text" id="nombre" name="nombre">
+    <label for="name">Precio:</label>
+    <input type="text" id="precio" name="precio">
+    <label for="name">Cantidad:</label>
+    <input type="text" id="cantidad" name="cantidad">
+    <button id="submitButton" class="btn">Crear Producto</button>
+    <a href="{% url 'listar_productos' %}" class="btn">Cancelar</a>
+  </form>
+{% endblock %}
