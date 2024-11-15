@@ -1,11 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Negocio, Producto
-from .forms import UsuarioForm, NegocioForm, CrearUsuarioForm
-from django.contrib.auth.forms import AuthenticationForm
+from .models import Negocio, Producto #se importan los modelos
+from .forms import EditarUsuarioForm, NegocioForm, CrearUsuarioForm #se importan los formularios
+from django.contrib.auth.forms import AuthenticationForm 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.models import User #uso el usuario de Django
+from django.contrib.auth.models import User, Group #uso el usuario de Django
 
+
+#-------------------------------
+#Daniel Avelar  INICIO
+#-------------------------------
 def custom_login(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -29,6 +33,7 @@ def custom_logout(request):
     return redirect('inicio')  # O cualquier página a la que desees redirigir
 
 # Vista de inicio, solo accesible si el usuario está logueado
+@login_required
 def inicio(request):
     # Inicializar variables
     es_administrador = es_encargado_menu = es_encargado_registro = es_despacho = False
@@ -67,33 +72,26 @@ def inicio(request):
         'es_despacho': es_despacho,
         'nombre_usuario': nombre_usuario,
         'tipo_usuario': tipo_usuario
-    })
-       
+    })    
+ 
+# Verificar si el usuario es Administrador
+def es_administrador(user):
+    return user.is_authenticated and user.groups.filter(name='Administrador').exists()
+      
 # Vista para la configuración del negocio (pendiente)
+@login_required
+@user_passes_test(es_administrador)
 def negocio_config(request):
     negocio = Negocio.objects.first()  # Suponemos que solo hay un negocio
     if request.method == "POST":
         form = NegocioForm(request.POST, request.FILES, instance=negocio)
         if form.is_valid():
             form.save()
-            return redirect('home')  # Redirige al inicio después de guardar
+            return redirect('inicio')  # Redirige al inicio después de guardar
     else:
         form = NegocioForm(instance=negocio)
     return render(request, 'negocio/configurar_negocio.html', {'form': form})
 
-# Verificar si el usuario es administrador
-def es_administrador(user):
-    return user.is_authenticated and user.groups.filter(name='Administrador').exists()
-
-@login_required
-@user_passes_test(es_administrador)
-def admin_dashboard(request):
-    # Aquí puedes agregar lógica o datos específicos para el administrador
-    context = {
-        'titulo': 'Panel de Administración',
-        # Puedes agregar más datos al contexto si es necesario
-    }
-    return render(request, 'admin_dashboard.html', context)
 
 # Vista para listar los usuarios
 @login_required
@@ -128,7 +126,7 @@ def editar_usuario(request, usuario_id):
                      User.objects.filter(groups__name='Administrador').count() == 1
 
     if request.method == "POST":
-        form = UsuarioForm(request.POST, instance=usuario)
+        form = EditarUsuarioForm(request.POST, instance=usuario)
         
         # Verifica si es el único administrador e intenta cambiar su propio rol
         if es_unico_admin and request.user == usuario:
@@ -148,7 +146,7 @@ def editar_usuario(request, usuario_id):
                 usuario.groups.set([admin_group])
             return redirect('listar_usuarios')
     else:
-        form = UsuarioForm(instance=usuario)
+        form = EditarUsuarioForm(instance=usuario)
         
         # Remueve el campo 'grupo' si es el único administrador editándose a sí mismo
         if es_unico_admin and request.user == usuario:
@@ -181,6 +179,10 @@ def eliminar_usuario(request, usuario_id):
 @user_passes_test(es_administrador)
 def lealtad(request):
     return render(request, 'lealtad/lealtad.html', {})
+
+#-------------------------------
+#Daniel Avelar  FIN
+#-------------------------------
 
 
 #-------------------------------

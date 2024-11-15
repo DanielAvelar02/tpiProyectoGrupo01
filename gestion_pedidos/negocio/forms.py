@@ -2,8 +2,8 @@ from django import forms
 from .models import Negocio
 from django.contrib.auth.models import User, Group
 
-# Formulario para crear y editar usuarios
-class UsuarioForm(forms.ModelForm):
+# Formulario para editar usuarios
+class EditarUsuarioForm(forms.ModelForm):
     grupo = forms.ModelChoiceField(
         queryset=Group.objects.all(),  # Incluye todos los grupos, incluso "Administrador"
         required=True,
@@ -57,7 +57,7 @@ class UsuarioForm(forms.ModelForm):
                 user.groups.set([self.cleaned_data["grupo"]])
         return user
 
-
+# Formulario para crear usuarios
 class CrearUsuarioForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
     grupo = forms.ModelChoiceField(
@@ -69,7 +69,6 @@ class CrearUsuarioForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'password', 'grupo']
-        
         
 # Formulario para configurar el negocio
 class NegocioForm(forms.ModelForm):
