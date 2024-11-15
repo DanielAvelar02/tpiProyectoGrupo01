@@ -4,10 +4,29 @@
     <meta charset="UTF-8" />
     <title>
       {% block title %}
-        Mi sitio
+        Bienvenido
       {% endblock %}
     </title>
   </head>
+  <style>
+    /* Aplica los colores del negocio a la plantilla */
+    
+    :root {
+      --color-primario: {{ negocio.color_primario }};
+      --color-secundario: {{ negocio.color_secundario }};
+      --color-terciario: {{ negocio.color_terciario }};
+    }
+          
+    body {
+      background-color: var(--color-primario);
+      color: var(--color-secundario);
+    }
+
+    img{
+      width: 50px;
+      height: 50px;
+    }
+  </style>
   <body>
     <!-- Menú -->
     <nav>
@@ -18,12 +37,13 @@
             {{ request.user.username }} <span>({{ request.user.groups.first.name }})</span>
           </p>
         </div>
+        <div class="business-info">
+          <img src="{{ negocio.logo.url }}" alt="Logo de {{ negocio.nombre }}" class="business-logo" />
+          <p>{{ negocio.nombre }}</p>
+        </div>
       {% endif %}
-      <ul>
-        <li>
-          <a href="/">Inicio</a>
-        </li>
-      </ul>
+
+      <a href="/">Inicio</a>
     </nav>
 
     <div class="content-container">

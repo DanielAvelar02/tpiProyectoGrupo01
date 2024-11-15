@@ -36,7 +36,7 @@ def custom_logout(request):
 @login_required
 def inicio(request):
     # Inicializar variables
-    es_administrador = es_encargado_menu = es_encargado_registro = es_despacho = False
+    es_administrador = es_encargado_menu = es_encargado_registro = es_despacho =es_cliente=es_repartidor = False
     nombre_usuario = ""
     tipo_usuario = "Sin grupo"
 
@@ -53,6 +53,9 @@ def inicio(request):
         es_encargado_menu = 'Encargado de Menú' in grupos_usuario
         es_encargado_registro = 'Encargado de Registro de Pedidos' in grupos_usuario
         es_despacho = 'Despacho de Pedidos' in grupos_usuario
+        es_cliente= 'Cliente' in grupos_usuario
+        es_repartidor = 'Repartidor' in grupos_usuario
+
 
         # Definir el tipo de usuario según su grupo principal
         if es_administrador:
@@ -63,15 +66,25 @@ def inicio(request):
             tipo_usuario = "Encargado de Registro de Pedidos"
         elif es_despacho:
             tipo_usuario = "Despacho de Pedidos"
-
+        elif es_cliente:
+            tipo_usuario = "Cliente"
+        elif es_repartidor:
+            tipo_usuario = "Repartidor"
+        
+    # Obtener datos del negocio
+    negocio = Negocio.objects.first()  # Obtener el primer negocio (unico xD)
+    
     # Pasar las variables al contexto
     return render(request, 'inicio.html', {
         'es_administrador': es_administrador,
         'es_encargado_menu': es_encargado_menu,
         'es_encargado_registro': es_encargado_registro,
         'es_despacho': es_despacho,
+        'es_cliente': es_cliente,
+        'es_repartidor': es_repartidor,
         'nombre_usuario': nombre_usuario,
-        'tipo_usuario': tipo_usuario
+        'tipo_usuario': tipo_usuario,
+        'negocio': negocio 
     })    
  
 # Verificar si el usuario es Administrador
@@ -91,7 +104,6 @@ def negocio_config(request):
     else:
         form = NegocioForm(instance=negocio)
     return render(request, 'negocio/configurar_negocio.html', {'form': form})
-
 
 # Vista para listar los usuarios
 @login_required
@@ -179,6 +191,14 @@ def eliminar_usuario(request, usuario_id):
 @user_passes_test(es_administrador)
 def lealtad(request):
     return render(request, 'lealtad/lealtad.html', {})
+
+#-------------------------------
+#Vista para clientes
+
+# Verificar si el usuario es Cliente
+def es_cliente(user):
+    return user.is_authenticated and user.groups.filter(name='Cliente').exists()
+      
 
 #-------------------------------
 #Daniel Avelar  FIN

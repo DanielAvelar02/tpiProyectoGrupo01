@@ -1,6 +1,7 @@
 <!-- negocio/templates/inicio.html -->
-{% extends 'base_generic.html' %} {% block title %}
-  Inicio
+{% extends 'base_generic.html' %}
+{% block title %}
+  Mi sitio - {{ negocio.nombre }}
 {% endblock %}
 {% block content %}
   <body>
@@ -37,17 +38,41 @@
             <li>
               <a href="{% url 'listar_productos' %}" class="btn">Gestion productos</a>
             </li>
+            <li>
+              <p>Menu</p>
+            </li>
           </ul>
         {% endif %}
 
         <!-- Enlace para el Encargado de Registro de Pedidos (Kike) -->
         {% if es_encargado_registro %}
-
+          <ul>
+            <li>Registro de pedidos</li>
+          </ul>
+          <ul>
+            <li>Historial de pedidos</li>
+          </ul>
         {% endif %}
 
         <!-- Enlace para el Despacho de Pedidos (Kenet) -->
         {% if es_despacho %}
 
+        {% endif %}
+
+        <!-- Enlace para el Cliente () -->
+        {% if es_cliente %}
+          <ul>
+            <li>Pedidos</li>
+            <li>Reclamos</li>
+            <li>Menu</li>
+          </ul>
+        {% endif %}
+
+        <!-- Enlace para el Repartidor () -->
+        {% if es_repartidor %}
+          <ul>
+            <li>Pedidos</li>
+          </ul>
         {% endif %}
 
         <br />

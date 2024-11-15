@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,8 +31,9 @@ ALLOWED_HOSTS = []
 # settings.py
 LOGIN_URL = 'login'  # Asegura que se redirija a la URL del login personalizado
 LOGIN_REDIRECT_URL = '/'  # Redirige a la página de inicio después de un login exitoso
-LOGOUT_REDIRECT_URL = '/'
-
+LOGOUT_REDIRECT_URL = '/' # Redirige a la página de inicio después de un logout exitoso
+MEDIA_URL = '/media/' # URL de los archivos multimedia
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # Ruta de los archivos multimedia
 
 # Application definition
 

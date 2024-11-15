@@ -4,7 +4,9 @@ from django.contrib.auth.models import User
 class Negocio(models.Model):
     nombre = models.CharField(max_length=100)
     logo = models.ImageField(upload_to='logos/')
-    paleta_colores = models.CharField(max_length=100)
+    color_primario = models.CharField(max_length=7, default='#FFFFFF', help_text="Código hexadecimal, por ejemplo: #FFFFFF")
+    color_secundario = models.CharField(max_length=7, default='#FFFFFF', help_text="Código hexadecimal, por ejemplo: #FFFFFF")
+    color_terciario = models.CharField(max_length=7, default='#FFFFFF', help_text="Código hexadecimal, por ejemplo: #FFFFFF")
     slogan = models.CharField(max_length=100)
     programa_lealtad_activado = models.BooleanField(default=True)
     cupones_activado = models.BooleanField(default=True)

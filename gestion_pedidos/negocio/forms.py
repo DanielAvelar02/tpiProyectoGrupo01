@@ -72,6 +72,10 @@ class CrearUsuarioForm(forms.ModelForm):
         
 # Formulario para configurar el negocio
 class NegocioForm(forms.ModelForm):
+    color_primario = forms.CharField(widget=forms.TextInput(attrs={'type': 'color'}), label="Color Primario")
+    color_secundario = forms.CharField(widget=forms.TextInput(attrs={'type': 'color'}), label="Color Secundario")
+    color_terciario = forms.CharField(widget=forms.TextInput(attrs={'type': 'color'}), label="Color Terciario")
+
     class Meta:
         model = Negocio
-        fields = ['nombre', 'logo', 'paleta_colores', 'slogan', 'programa_lealtad_activado', 'cupones_activado']
+        fields = ['nombre', 'logo', 'color_primario', 'color_secundario', 'color_terciario', 'slogan', 'programa_lealtad_activado', 'cupones_activado']
