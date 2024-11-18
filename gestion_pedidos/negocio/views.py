@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Negocio, Producto #se importan los modelos
-from .forms import EditarUsuarioForm, NegocioForm, CrearUsuarioForm #se importan los formularios
+from .forms import EditarUsuarioForm, NegocioForm, CrearUsuarioForm, RegistrarClienteForm #se importan los formularios
 from django.contrib.auth.forms import AuthenticationForm 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -30,7 +30,7 @@ def custom_login(request):
 
 def custom_logout(request):
     logout(request)
-    return redirect('inicio')  # O cualquier página a la que desees redirigir
+    return redirect('/')  # O cualquier página a la que desees redirigir
 
 # Vista de inicio, solo accesible si el usuario está logueado
 @login_required
@@ -198,6 +198,22 @@ def lealtad(request):
 # Verificar si el usuario es Cliente
 def es_cliente(user):
     return user.is_authenticated and user.groups.filter(name='Cliente').exists()
+
+# Vista para registrar un cliente nuevo
+def registrar_cliente(request):
+    if request.method == 'POST':
+        form = RegistrarClienteForm(request.POST)
+        if form.is_valid():
+             # Guardar el usuario y asignar automáticamente el grupo "Cliente"
+            usuario = form.save()
+
+            # Iniciar sesión automáticamente con el usuario recién creado
+            login(request, usuario)
+
+            return redirect('inicio')
+    else:
+        form = RegistrarClienteForm()
+    return render(request, 'registration/registrar_cliente.html', {'form': form})
       
 
 #-------------------------------
