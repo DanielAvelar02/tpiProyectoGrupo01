@@ -2,6 +2,19 @@ from django import forms
 from .models import Negocio
 from django.contrib.auth.models import User, Group
 
+# Formulario para crear usuarios
+class CrearUsuarioForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
+    grupo = forms.ModelChoiceField(
+        queryset=Group.objects.all(),  # Incluye todos los grupos, incluso "Administrador"
+        required=True,
+        label="Grupo"
+    )
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password', 'grupo']
+ 
 # Formulario para editar usuarios
 class EditarUsuarioForm(forms.ModelForm):
     grupo = forms.ModelChoiceField(
@@ -56,20 +69,7 @@ class EditarUsuarioForm(forms.ModelForm):
             if self.cleaned_data["grupo"]:
                 user.groups.set([self.cleaned_data["grupo"]])
         return user
-
-# Formulario para crear usuarios
-class CrearUsuarioForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
-    grupo = forms.ModelChoiceField(
-        queryset=Group.objects.all(),  # Incluye todos los grupos, incluso "Administrador"
-        required=True,
-        label="Grupo"
-    )
-
-    class Meta:
-        model = User
-        fields = ['username', 'email', 'password', 'grupo']
-        
+  
 # Formulario para configurar el negocio
 class NegocioForm(forms.ModelForm):
     color_primario = forms.CharField(widget=forms.TextInput(attrs={'type': 'color'}), label="Color Primario")
@@ -79,3 +79,22 @@ class NegocioForm(forms.ModelForm):
     class Meta:
         model = Negocio
         fields = ['nombre', 'logo', 'color_primario', 'color_secundario', 'color_terciario', 'slogan', 'programa_lealtad_activado', 'cupones_activado']
+
+#Formulario para crear clientes nuevos
+class RegistrarClienteForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password']  # Eliminamos el campo 'grupo'
+
+    def save(self, commit=True):
+        # Guardamos el usuario y asignamos el grupo "Cliente"
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data['password'])
+        if commit:
+            user.save()
+            # Asignar el grupo "Cliente"
+            cliente_group, created = Group.objects.get_or_create(name='Cliente')
+            user.groups.add(cliente_group)
+        return user
