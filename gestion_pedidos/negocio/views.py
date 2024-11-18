@@ -225,6 +225,8 @@ def listar_productos(request):
 @user_passes_test(es_encargado_menu)
 def crear_producto(request):
     negocio = Negocio.objects.first()  # Suponemos que solo hay un negocio
+    accion = 'Agregar producto'
+    action = '/negocio/crear-producto/'
     if request.method == "POST":
         nombre = request.POST.get('nombre')
         precio = request.POST.get('precio')
@@ -235,19 +237,48 @@ def crear_producto(request):
                 precio = float(precio)
                 cantidad_disponible = int(cantidad_disponible)
             except ValueError:
-                return render(request, 'producto/crear_producto.html', {'negocio': negocio, 'error': 'El precio debe ser un número decimal y la cantidad debe ser un número entero'})
+                return render(request, 'producto/crear_producto.html', {'negocio': negocio, 'accion': accion, 'action': action,'error': 'El precio debe ser un número decimal y la cantidad debe ser un número entero'})
             producto = Producto(nombre=nombre, precio=precio, cantidad_disponible=cantidad_disponible, negocio=negocio)
             producto.save()
             return redirect('listar_productos')
         else:
-            return render(request, 'producto/crear_producto.html', {'negocio': negocio, 'error': 'Faltan datos'})
+            return render(request, 'producto/crear_producto.html', {'negocio': negocio,'accion': accion, 'action': action, 'error': 'Faltan datos'})
     else:
-        return render(request, 'producto/crear_producto.html', {'negocio': negocio})
+        return render(request, 'producto/crear_producto.html', {'negocio': negocio, 'accion': accion, 'action': action})
         
 def cambiar_estado_producto(request, producto_id):
     producto = get_object_or_404(Producto, id=producto_id)
     producto.activo = not producto.activo
     producto.save()
+    return redirect('listar_productos')
+
+def editar_producto(request, producto_id):
+    accion = 'Guardar cambios'
+    action = '/negocio/editar-producto/' + str(producto_id)
+    producto = get_object_or_404(Producto, id=producto_id)
+    if request.method == "POST":
+        nombre = request.POST.get('nombre')
+        precio = request.POST.get('precio')
+        cantidad_disponible = request.POST.get('cantidad')
+        if nombre and precio and cantidad_disponible is not None:
+            try:
+                precio = float(precio)
+                cantidad_disponible = int(cantidad_disponible)
+            except ValueError:
+                return render(request, 'producto/crear_producto.html', {'producto': producto, 'accion': accion, 'action': action, 'error': 'El precio debe ser un número decimal y la cantidad debe ser un número entero'})
+            producto.nombre = nombre
+            producto.precio = precio
+            producto.cantidad_disponible = cantidad_disponible
+            producto.save()
+            return redirect('listar_productos')
+        else:
+            return render(request, 'producto/crear_producto.html', {'error': 'Faltan datos', 'producto': producto, 'accion': accion, 'action': action})
+    else:
+        return render(request, 'producto/crear_producto.html', {'producto': producto, 'accion': accion, 'action': action})
+
+def eliminar_producto(request, producto_id):
+    producto = get_object_or_404(Producto, id=producto_id)
+    producto.delete()
     return redirect('listar_productos')
 
 #-------------------------------
