@@ -253,3 +253,43 @@ def cambiar_estado_producto(request, producto_id):
 #-------------------------------
 #Carlos Rauda Modificaciones FIN
 #-------------------------------
+
+
+#-------------------------------
+#Benitez Modificaciones
+#-------------------------------
+
+from django.shortcuts import render
+
+def menu_del_dia(request):
+    # Aquí puedes obtener los platos del modelo si estuvieran definidos
+    platos = [
+        {"nombre": "Plato 1", "imagen": "https://via.placeholder.com/100"},
+        {"nombre": "Plato 2", "imagen": "https://via.placeholder.com/100"},
+        {"nombre": "Plato 3", "imagen": "https://via.placeholder.com/100"},
+        {"nombre": "Plato 4", "imagen": "https://via.placeholder.com/100"},
+        {"nombre": "Plato 5", "imagen": "https://via.placeholder.com/100"},
+        {"nombre": "Plato 6", "imagen": "https://via.placeholder.com/100"},
+    ]
+    return render(request, 'cliente/menu_del_dia.html', {'platos': platos})
+
+def ordenar_platillo(request, platillo_id):
+    # Simulación de datos del platillo
+    platillo = {
+        'nombre': 'Hamburguesa Especial',
+        'precio': 7.99,
+        'imagen': 'https://via.placeholder.com/300',
+        'incluye': [
+            {'nombre': 'Papas', 'imagen': 'https://via.placeholder.com/50'},
+            {'nombre': 'Soda', 'imagen': 'https://via.placeholder.com/50'},
+            {'nombre': 'Hamburguesa', 'imagen': 'https://via.placeholder.com/50'}
+        ]
+    }
+    return render(request, 'cliente/ordenar_platillo.html', {'platillo': platillo})
+
+def pagar(request):
+    return render(request, 'cliente/pago.html')
+
+def seguimiento_pedido(request):
+    return render(request, 'cliente/seguimiento_pedido.html')
+
