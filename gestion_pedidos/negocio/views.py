@@ -84,7 +84,6 @@ def inicio(request):
         'es_repartidor': es_repartidor,
         'nombre_usuario': nombre_usuario,
         'tipo_usuario': tipo_usuario,
-        'negocio': negocio 
     })    
  
 # Verificar si el usuario es Administrador
@@ -234,13 +233,11 @@ def es_encargado_menu(user):
 @user_passes_test(es_encargado_menu) #valida que el usuario sea encargado de menu
 def listar_productos(request):
     productos = Producto.objects.all()
-    negocio = Negocio.objects.first()
-    return render(request, 'producto/listar_productos.html', {'productos': productos, 'negocio': negocio})
+    return render(request, 'producto/listar_productos.html', {'productos': productos})
 
 @login_required
 @user_passes_test(es_encargado_menu)
 def crear_producto(request):
-    negocio = Negocio.objects.first()  # Suponemos que solo hay un negocio
     accion = 'Agregar producto'
     action = '/negocio/crear-producto/'
     if request.method == "POST":
@@ -253,14 +250,14 @@ def crear_producto(request):
                 precio = float(precio)
                 cantidad_disponible = int(cantidad_disponible)
             except ValueError:
-                return render(request, 'producto/crear_producto.html', {'negocio': negocio, 'accion': accion, 'action': action,'error': 'El precio debe ser un número decimal y la cantidad debe ser un número entero'})
+                return render(request, 'producto/crear_producto.html', {'accion': accion, 'action': action,'error': 'El precio debe ser un número decimal y la cantidad debe ser un número entero'})
             producto = Producto(nombre=nombre, precio=precio, cantidad_disponible=cantidad_disponible, negocio=negocio)
             producto.save()
             return redirect('listar_productos')
         else:
-            return render(request, 'producto/crear_producto.html', {'negocio': negocio,'accion': accion, 'action': action, 'error': 'Faltan datos'})
+            return render(request, 'producto/crear_producto.html', {'accion': accion, 'action': action, 'error': 'Faltan datos'})
     else:
-        return render(request, 'producto/crear_producto.html', {'negocio': negocio, 'accion': accion, 'action': action})
+        return render(request, 'producto/crear_producto.html', {'accion': accion, 'action': action})
         
 def cambiar_estado_producto(request, producto_id):
     producto = get_object_or_404(Producto, id=producto_id)

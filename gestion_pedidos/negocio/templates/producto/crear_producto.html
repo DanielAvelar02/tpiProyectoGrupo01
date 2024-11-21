@@ -1,31 +1,33 @@
 {% extends 'base_generic.html' %} {% block title %}
-  Productos
+  Registrar producto
 {% endblock %}
 {% block content %}
-  <h1>Vista en proceso</h1>
-  <p>Crear un producto</p>
-  <h1>{{negocio.nombre}}</h1>
-  <form method="POST" action="{{action}}">
+  <h1>Registrar producto</h1>
+  <form method="POST" action="{{ action }}">
     {% csrf_token %}
-    <p style="color:red">{{error}}</p>
+    <p style="color:red">{{ error }}</p>
     <label for="name">Nombre:</label>
-    <input type="text" id="nombre" name="nombre" value="{{producto.nombre}}">
+    <input type="text" id="nombre" name="nombre" value="{{ producto.nombre }}" />
+    <br />
+
     <label for="name">Precio:</label>
-    <input type="text" id="precio" name="precio" value="{{producto.precio}}">
+    <input type="text" id="precio" name="precio" value="{{ producto.precio }}" />
+    <br />
+
     <label for="name">Cantidad:</label>
-    <input type="text" id="cantidad" name="cantidad" value="{{producto.cantidad_disponible}}">
-    <button id="submitButton" class="btn">{{accion}}</button>
+    <input type="text" id="cantidad" name="cantidad" value="{{ producto.cantidad_disponible }}" />
+    <br /><button id="submitButton" class="btn">{{ accion }}</button>
     <a href="{% url 'listar_productos' %}" class="btn">Cancelar</a>
   </form>
-  <script> 
-    function formatNumber() { 
-      let numberInput = document.getElementById('precio').value;
-      let formattedNumber = parseFloat(numberInput.replace(',', '.')).toFixed(2); 
-      if(isNaN(formattedNumber)) {
-        formattedNumber = '';
+  <script>
+    function formatNumber() {
+      let numberInput = document.getElementById('precio').value
+      let formattedNumber = parseFloat(numberInput.replace(',', '.')).toFixed(2)
+      if (isNaN(formattedNumber)) {
+        formattedNumber = ''
       }
-      document.getElementById('precio').value = formattedNumber;
+      document.getElementById('precio').value = formattedNumber
     }
-    formatNumber(); 
+    formatNumber()
   </script>
 {% endblock %}

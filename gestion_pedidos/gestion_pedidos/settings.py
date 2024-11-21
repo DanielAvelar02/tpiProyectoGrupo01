@@ -70,6 +70,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # Sirve para que los datos del negocio estén disponibles en todas las vistas
+                'negocio.context_processors.negocio_context',  # Agrega el contexto del negocio
             ],
         },
     },
