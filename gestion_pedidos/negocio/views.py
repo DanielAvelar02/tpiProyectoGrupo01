@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Negocio, Producto #se importan los modelos
-from .forms import EditarUsuarioForm, NegocioForm, CrearUsuarioForm, RegistrarClienteForm #se importan los formularios
+from .models import Negocio, Producto, MenuDelDia, MenuProducto #se importan los modelos
+from .forms import EditarUsuarioForm, NegocioForm, CrearUsuarioForm, RegistrarClienteForm, CrearMenuForm #se importan los formularios
 from django.contrib.auth.forms import AuthenticationForm 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User, Group #uso el usuario de Django
-
+from datetime import date
+from django.contrib import messages
 
 #-------------------------------
 #Daniel Avelar  INICIO
@@ -229,6 +230,10 @@ def registrar_cliente(request):
 def es_encargado_menu(user):
     return user.is_authenticated and user.groups.filter(name='Encargado de Menú').exists()
 
+def es_encargado_menu_and_es_cliente(user):
+    return user.is_authenticated and user.groups.filter(name='Encargado de Menú').exists() or user.groups.filter(name='Cliente').exists()
+
+
 @login_required #valida que el usuario este logueado
 @user_passes_test(es_encargado_menu) #valida que el usuario sea encargado de menu
 def listar_productos(request):
@@ -293,6 +298,170 @@ def eliminar_producto(request, producto_id):
     producto = get_object_or_404(Producto, id=producto_id)
     producto.delete()
     return redirect('listar_productos')
+
+#Modificaciones de Daniel a Carlo  INICIO
+
+#Vista para crear el menú del día
+@login_required
+@user_passes_test(es_encargado_menu)
+def crear_menu(request):
+    if request.method == "POST":
+        form = CrearMenuForm(request.POST)
+        if form.is_valid():
+            fecha = form.cleaned_data['fecha']
+            productos_con_cantidad = form.cleaned_data['productos_con_cantidad']
+
+            # Crear el menú
+            menu = MenuDelDia.objects.create(fecha=fecha)
+            for producto, cantidad in productos_con_cantidad.items():
+                MenuProducto.objects.create(menu=menu, producto=producto, cantidad_disponible=cantidad)
+
+            return redirect('listar_menus')
+
+        # Renderizar con errores si el formulario no es válido
+        return render(request, 'producto/crear_menu.html', {'form': form})
+
+    # GET request
+    form = CrearMenuForm()
+    return render(request, 'producto/crear_menu.html', {'form': form})
+
+# Vista para editar el menú del día
+@login_required
+@user_passes_test(es_encargado_menu)
+def editar_menu(request):
+    hoy = date.today()
+    menu_hoy = MenuDelDia.objects.filter(fecha=hoy).first()
+
+    if not menu_hoy:
+        messages.error(request, "No hay menú para el día de hoy.")
+        return redirect('listar_menus')
+    
+    productos_info = []
+    productos_ids = []
+
+    for producto in menu_hoy.productos.all():
+        menu_producto = MenuProducto.objects.filter(menu=menu_hoy, producto=producto).first()
+        if menu_producto:
+            productos_info.append({
+                'id': producto.id,
+                'nombre': producto.nombre,
+                'cantidad_disponible': menu_producto.cantidad_disponible
+            })
+            productos_ids.append(producto.id)  # Agregamos solo el ID
+
+    if request.method == "POST":
+        # Procesar la lógica de actualización del menú aquí
+        productos_seleccionados = request.POST.getlist('productos')
+        cantidades = request.POST.getlist('cantidades')
+
+        try:
+            # Limpiar relaciones anteriores
+            menu_hoy.productos.clear()
+
+            for producto_id, cantidad in zip(productos_seleccionados, cantidades):
+                producto = Producto.objects.get(id=producto_id, activo=True)
+                cantidad = int(cantidad)
+
+                if cantidad > producto.cantidad_disponible:
+                    messages.error(
+                        request,
+                        f'La cantidad de "{producto.nombre}" excede la disponible.'
+                    )
+                    return redirect('editar_menu')
+
+                # Crear la relación actualizada
+                MenuProducto.objects.create(menu=menu_hoy, producto=producto, cantidad_disponible=cantidad)
+
+            messages.success(request, "El menú se actualizó correctamente.")
+            return redirect('listar_menus')
+
+        except (Producto.DoesNotExist, ValueError) as e:
+            messages.error(request, "Ocurrió un error al actualizar el menú.")
+            return redirect('editar_menu')
+        
+    return render(request, 'producto/editar_menu.html', {
+        'menu': menu_hoy,
+        'productos': Producto.objects.filter(activo=True),
+        'productos_info': productos_info,
+        'productos_ids': productos_ids
+    })
+
+# Vista para listar los menús
+@login_required
+# Disponible para Encargado de Menú y Cliente
+def listar_menus(request):
+
+     # Inicializar variables
+    es_encargado_menu =es_cliente = False
+
+    if request.user.is_authenticated:
+        grupos_usuario = request.user.groups.values_list('name', flat=True)
+        es_encargado_menu = 'Encargado de Menú' in grupos_usuario
+        es_cliente= 'Cliente' in grupos_usuario
+
+    hoy = date.today()
+    menu_hoy = MenuDelDia.objects.filter(fecha=hoy).first()
+
+    productos_info = []
+    if menu_hoy:
+        for producto in menu_hoy.productos.all():
+            menu_producto = MenuProducto.objects.filter(menu=menu_hoy, producto=producto).first()
+            if menu_producto:
+                productos_info.append({
+                    'nombre': producto.nombre,
+                    'cantidad_disponible': menu_producto.cantidad_disponible
+                })
+
+    return render(request, 'producto/listar_menus.html', {
+        'menu_hoy': {
+            'fecha': hoy,
+            'productos': productos_info
+        },
+        'es_encargado_menu': es_encargado_menu,
+        'es_cliente': es_cliente,
+    })
+
+#Vista para ver el historial de menús
+@login_required
+@user_passes_test(es_encargado_menu)
+def historial_menus(request):
+    hoy = date.today()
+
+    # Menús pasados (fecha menor a hoy)
+    menus_pasados = MenuDelDia.objects.filter(fecha__lt=hoy).prefetch_related('menuproducto_set__producto').order_by('-fecha')
+
+    # Menús futuros (fecha mayor o igual a hoy)
+    menus_futuros = MenuDelDia.objects.filter(fecha__gte=hoy).prefetch_related('menuproducto_set__producto').order_by('fecha')
+
+    return render(request, 'producto/historial_menus.html', {
+        'menus_pasados': menus_pasados,
+        'menus_futuros': menus_futuros,
+    })
+
+
+
+# Vista para eliminar un menú
+@login_required
+@user_passes_test(es_encargado_menu)
+def eliminar_menu(request, menu_id):
+    # Obtener el menú por su ID
+    menu = get_object_or_404(MenuDelDia, id=menu_id)
+
+    # Eliminar el menú
+    menu.delete()
+
+    # Mensaje de éxito
+    messages.success(request, "El menú se ha eliminado correctamente.")
+
+    # Redirigir al historial de menús
+    return redirect('historial_menus')
+
+
+
+
+
+
+#Modificaciones de Daniel a Carlo  FIN
 
 #-------------------------------
 #Carlos Rauda Modificaciones FIN

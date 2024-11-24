@@ -25,6 +25,16 @@ urlpatterns = [
     path('editar-producto/<int:producto_id>', views.editar_producto, name='editar_producto'),
     path('eliminar-producto/<int:producto_id>', views.eliminar_producto, name='eliminar_producto'),
     path('cambiar-estado-producto/<int:producto_id>/', views.cambiar_estado_producto, name='cambiar_estado_producto'),
+
+
+    path('listar-menus/', views.listar_menus, name='listar_menus'),
+    path('crear-menu/', views.crear_menu, name='crear_menu'),
+    path('editar-menu/', views.editar_menu, name='editar_menu'),
+    path('historial-menus/', views.historial_menus, name='historial_menus'),
+    path('eliminar-menu/<int:menu_id>/', views.eliminar_menu, name='eliminar_menu'),  # Ruta de eliminación
+
+
+
     #-------------------------------
     #Carlos Rauda Modificaciones FIN
     #-------------------------------

@@ -1,4 +1,3 @@
-<!-- negocio/templates/inicio.html -->
 {% extends 'base_generic.html' %}
 {% block title %}
   Mi sitio - {{ negocio.nombre }}
@@ -39,7 +38,7 @@
               <a href="{% url 'listar_productos' %}" class="btn">Gestion productos</a>
             </li>
             <li>
-              <p>Menu</p>
+              <a href="{% url 'listar_menus' %}" class="btn">Gestion menus</a>
             </li>
           </ul>
         {% endif %}
@@ -64,7 +63,9 @@
           <ul>
             <li>Pedidos</li>
             <li>Reclamos</li>
-            <li>Menu</li>
+            <li>
+              <a href="{% url 'listar_menus' %}" class="btn">Menu del dia</a>
+            </li>
           </ul>
         {% endif %}
 

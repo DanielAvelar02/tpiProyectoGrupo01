@@ -1,6 +1,8 @@
 from django import forms
-from .models import Negocio
+from .models import Negocio, Producto, MenuDelDia
 from django.contrib.auth.models import User, Group
+from datetime import datetime, date
+
 
 # Formulario para crear usuarios
 class CrearUsuarioForm(forms.ModelForm):
@@ -98,3 +100,64 @@ class RegistrarClienteForm(forms.ModelForm):
             cliente_group, created = Group.objects.get_or_create(name='Cliente')
             user.groups.add(cliente_group)
         return user
+
+#Formulario para crear menus
+class CrearMenuForm(forms.Form):
+    fecha = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        required=True,
+        error_messages={'required': 'La fecha es obligatoria.'}
+    )
+    productos = forms.ModelMultipleChoiceField(
+        queryset=Producto.objects.filter(activo=True),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        productos = Producto.objects.filter(activo=True)
+        for producto in productos:
+            self.fields[f'cantidad_{producto.nombre}'] = forms.IntegerField(
+                required=False,
+                min_value=1,
+                max_value=producto.cantidad_disponible,
+                widget=forms.NumberInput(attrs={'placeholder': f'Máx: {producto.cantidad_disponible}.'})
+            )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        fecha = cleaned_data.get('fecha')
+        productos = cleaned_data.get('productos')
+
+        # Validar que la fecha no sea pasada
+        if fecha and fecha < date.today():
+            self.add_error('fecha', "No se pueden crear menús para fechas anteriores a la actual.")
+        # Validar que no exista un menú para la fecha seleccionada
+        elif fecha and MenuDelDia.objects.filter(fecha=fecha).exists():
+            self.add_error('fecha', 'Ya existe un menú para esta fecha.')
+        # Validar que al menos un producto haya sido seleccionado
+        elif not productos:
+            self.add_error('productos', "Debe seleccionar al menos un producto para el menú.")
+                   
+        # Validar cantidades asociadas a los productos seleccionados
+        productos_con_cantidad = {}
+        for producto in productos or []:  # Evitar errores si productos es None
+            cantidad = cleaned_data.get(f'cantidad_{producto.id}')
+            if cantidad is not None:
+                if cantidad > producto.cantidad_disponible:
+                    self.add_error(f'cantidad_{producto.id}',
+                                f'La cantidad para "{producto.nombre}" excede la disponible ({producto.cantidad_disponible}).')
+                elif cantidad < 1:
+                    self.add_error(f'cantidad_{producto.id}',
+                                f'La cantidad para "{producto.nombre}" debe ser al menos 1.')
+                else:
+                    productos_con_cantidad[producto] = cantidad
+             # Validación final: Verificar que haya al menos un producto con cantidad válida
+            if not productos_con_cantidad and not self.errors.get('productos'):
+                self.add_error('productos', "Debe especificar al menos una cantidad válida para los productos seleccionados.")
+
+        # Agregar productos con cantidad válida al cleaned_data si todo es correcto
+        cleaned_data['productos_con_cantidad'] = productos_con_cantidad
+
+        return cleaned_data

@@ -10,13 +10,12 @@
   </head>
   <style>
     /* Aplica los colores del negocio a la plantilla */
-    
     :root {
       --color-primario: {{ negocio.color_primario }};
       --color-secundario: {{ negocio.color_secundario }};
       --color-terciario: {{ negocio.color_terciario }};
     }
-          
+
     body {
       background-color: var(--color-primario);
       color: var(--color-secundario);
@@ -27,6 +26,14 @@
       height: 50px;
     }
 
+    table {
+      border-collapse: collapse;
+    }
+  
+    th, td {
+        border: 1px solid black;
+        padding: 4px;
+    }
 
   </style>
   <body>
@@ -47,10 +54,10 @@
 
       <a href="/">Inicio</a>
     </nav>
-
+    
     <div class="content-container">
       {% block content %}
-        <!-- El contenido de la página se insertará aquí -->
+        <!-- El contenido de la página se insertará aquí -->       
          
       {% endblock %}
     </div>
