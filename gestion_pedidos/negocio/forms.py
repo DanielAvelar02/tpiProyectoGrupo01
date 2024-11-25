@@ -118,7 +118,7 @@ class CrearMenuForm(forms.Form):
         super().__init__(*args, **kwargs)
         productos = Producto.objects.filter(activo=True)
         for producto in productos:
-            self.fields[f'cantidad_{producto.nombre}'] = forms.IntegerField(
+            self.fields[f'cantidad_{producto.id}'] = forms.IntegerField(
                 required=False,
                 min_value=1,
                 max_value=producto.cantidad_disponible,
@@ -144,6 +144,7 @@ class CrearMenuForm(forms.Form):
         productos_con_cantidad = {}
         for producto in productos or []:  # Evitar errores si productos es None
             cantidad = cleaned_data.get(f'cantidad_{producto.id}')
+            print(cantidad)
             if cantidad is not None:
                 if cantidad > producto.cantidad_disponible:
                     self.add_error(f'cantidad_{producto.id}',
