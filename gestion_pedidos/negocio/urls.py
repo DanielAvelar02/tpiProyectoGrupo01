@@ -38,4 +38,14 @@ urlpatterns = [
     #-------------------------------
     #Carlos Rauda Modificaciones FIN
     #-------------------------------
+
+
+
+    #-------------------------------
+    #Benitez Modificaciones
+    #-------------------------------
+    path('menu/', views.menu_del_dia, name='menu_del_dia'),
+    path('ordenar-platillo/<int:platillo_id>/', views.ordenar_platillo, name='ordenar_platillo'),
+    path('pagar/', views.pagar, name='pagar'),
+    path('seguimiento-pedido/', views.seguimiento_pedido, name='seguimiento_pedido'),
 ]

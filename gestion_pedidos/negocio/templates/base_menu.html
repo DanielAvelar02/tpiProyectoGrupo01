@@ -1,0 +1,132 @@
+<!-- negocio/templates/base_menu.html -->
+{% extends 'base_generic.html' %}
+
+{% block title %}
+  {% block menu_title %}{% endblock %}
+{% endblock %}
+
+{% block content %}
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        text-align: center; /* Centra todo el contenido principal */
+    }
+
+    header {
+        background-color: #f8f8f8;
+        border-bottom: 1px solid #ccc;
+        padding: 10px 20px;
+    }
+
+    .navbar ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: flex-end;
+        gap: 20px;
+    }
+
+    .navbar li {
+        display: inline;
+    }
+
+    .navbar a {
+        text-decoration: none;
+        color: #007BFF;
+        font-size: 16px;
+    }
+
+    .navbar a:hover {
+        text-decoration: underline;
+    }
+
+    .modal {
+      display: none; /* Oculto por defecto */
+      position: fixed;
+      z-index: 1;
+      right: 0;
+      top: 0;
+      width: 30%; /* Ancho del modal */
+      height: 100%;
+      overflow: auto;
+      background-color: transparent; /* Fondo transparente */
+      padding-top: 60px;
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 90%; /* Ancho del contenido del modal */
+        max-width: 300px;
+        text-align: center;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+  </style>
+
+  <header>
+    <nav class="navbar">
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Productos</a></li>
+        <li><a href="#" onclick="openCart()">Carrito</a></li>
+        <li><a href="#">Nosotros</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  {% block menu_content %}{% endblock %}
+
+  <!-- Modal del Carrito -->
+  <div id="cartModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeCart()">&times;</span>
+      <h2>Carrito</h2>
+      <ul id="cart-items"></ul>
+    </div>
+  </div>
+
+  <script>
+    let cart = [];
+
+    function openCart() {
+        const cartItems = document.getElementById('cart-items');
+        cartItems.innerHTML = '';
+        cart.forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = item;
+            cartItems.appendChild(li);
+        });
+        document.getElementById('cartModal').style.display = "block";
+    }
+
+    function closeCart() {
+        document.getElementById('cartModal').style.display = "none";
+    }
+
+    // Cierra el modal cuando el usuario hace clic fuera de él
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('cartModal')) {
+            document.getElementById('cartModal').style.display = "none";
+        }
+    }
+  </script>
+{% endblock %}

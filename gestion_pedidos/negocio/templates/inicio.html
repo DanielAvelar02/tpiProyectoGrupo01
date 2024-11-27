@@ -64,7 +64,19 @@
             <li>Pedidos</li>
             <li>Reclamos</li>
             <li>
-              <a href="{% url 'listar_menus' %}" class="btn">Menu del dia</a>
+              <a href="{% url 'listar_menus' %}" class="btn">Editar Menú del día</a>
+            </li>
+            <li>
+              <a href="{% url 'menu_del_dia' %}" class="btn">Menú del Día</a>
+            </li>
+            <li>
+              <a href="{% url 'ordenar_platillo' 1 %}" class="btn">Ordenar Platillo</a>
+            </li>
+            <li>
+              <a href="{% url 'pagar' %}" class="btn">Pago</a>
+            </li>
+            <li>
+              <a href="{% url 'seguimiento_pedido' %}" class="btn">Seguimiento de Pedido</a>
             </li>
           </ul>
         {% endif %}
