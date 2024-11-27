@@ -18,77 +18,73 @@
       {% if user.is_authenticated %}
         <!-- Enlace para el Administrador (Daniel) -->
         {% if es_administrador %}
-          <ul>
-            <li>
-              <a href="{% url 'listar_usuarios' %}" class="btn">Gestion usuarios</a>
-            </li>
-            <li>
-              <a href="{% url 'configurar_negocio' %}" class="btn">Configuracion del negocio</a>
-            </li>
-            <li>
-              <a href="{% url 'lealtad' %}" class="btn">Programa de lealtad</a>
-            </li>
-          </ul>
+          <div class="dropdown">
+            <button class="dropbtn">Administrador</button>
+            <div class="dropdown-content">
+              <a href="{% url 'listar_usuarios' %}">Gestion usuarios</a>
+              <a href="{% url 'configurar_negocio' %}">Configuracion del negocio</a>
+              <a href="{% url 'lealtad' %}">Programa de lealtad</a>
+            </div>
+          </div>
         {% endif %}
 
         <!-- Enlace para el Encargado de Menú (Carlos) -->
         {% if es_encargado_menu %}
-          <ul>
-            <li>
-              <a href="{% url 'listar_productos' %}" class="btn">Gestion productos</a>
-            </li>
-            <li>
-              <a href="{% url 'listar_menus' %}" class="btn">Gestion menus</a>
-            </li>
-          </ul>
+          <div class="dropdown">
+            <button class="dropbtn">Encargado de Menú</button>
+            <div class="dropdown-content">
+              <a href="{% url 'listar_productos' %}">Gestion productos</a>
+              <a href="{% url 'listar_menus' %}">Gestion menus</a>
+            </div>
+          </div>
         {% endif %}
 
         <!-- Enlace para el Encargado de Registro de Pedidos (Kike) -->
         {% if es_encargado_registro %}
-          <ul>
-            <li>Registro de pedidos</li>
-          </ul>
-          <ul>
-            <li>Historial de pedidos</li>
-          </ul>
+          <div class="dropdown">
+            <button class="dropbtn">Encargado de Registro</button>
+            <div class="dropdown-content">
+              <a href="#">Registro de pedidos</a>
+              <a href="#">Historial de pedidos</a>
+            </div>
+          </div>
         {% endif %}
 
         <!-- Enlace para el Despacho de Pedidos (Kenet) -->
         {% if es_despacho %}
-
+          <div class="dropdown">
+            <button class="dropbtn">Despacho</button>
+            <div class="dropdown-content">
+              <!-- Agregar enlaces pertinentes para Despacho -->
+            </div>
+          </div>
         {% endif %}
 
-        <!-- Enlace para el Cliente () -->
+        <!-- Enlace para el Cliente -->
         {% if es_cliente %}
-          <ul>
-            <li>Pedidos</li>
-            <li>Reclamos</li>
-            <li>
-              <a href="{% url 'listar_menus' %}" class="btn">Editar Menú del día</a>
-            </li>
-            <li>
-              <a href="{% url 'menu_del_dia' %}" class="btn">Menú del Día</a>
-            </li>
-            <li>
-              <a href="{% url 'ordenar_platillo' 1 %}" class="btn">Ordenar Platillo</a>
-            </li>
-            <li>
-              <a href="{% url 'pagar' %}" class="btn">Pago</a>
-            </li>
-            <li>
-              <a href="{% url 'seguimiento_pedido' %}" class="btn">Seguimiento de Pedido</a>
-            </li>
-          </ul>
+          <div class="dropdown">
+            <button class="dropbtn">Cliente</button>
+            <div class="dropdown-content">
+              <a href="{% url 'listar_menus' %}">Editar Menú del día</a>
+              <a href="{% url 'menu_del_dia' %}">Menú del Día</a>
+              <a href="{% url 'ordenar_platillo' 1 %}">Ordenar Platillo</a>
+              <a href="{% url 'pagar' %}">Pago</a>
+              <a href="{% url 'seguimiento_pedido' %}">Seguimiento de Pedido</a>
+              <a href="#">Pedidos</a>
+              <a href="#">Reclamos</a>
+            </div>
+          </div>
         {% endif %}
 
-        <!-- Enlace para el Repartidor () -->
+        <!-- Enlace para el Repartidor -->
         {% if es_repartidor %}
-          <ul>
-            <li>Pedidos</li>
-          </ul>
+          <div class="dropdown">
+            <button class="dropbtn">Repartidor</button>
+            <div class="dropdown-content">
+              <a href="#">Pedidos</a>
+            </div>
+          </div>
         {% endif %}
-
-        <br />
       {% endif %}
     </div>
   </body>
