@@ -2,106 +2,163 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
       {% block title %}
         Bienvenido
       {% endblock %}
     </title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      /* Aplica los colores del negocio a la plantilla */
+      :root {
+        --color-primario: {{ negocio.color_primario }};
+        --color-secundario: {{ negocio.color_secundario }};
+        --color-terciario: {{ negocio.color_terciario }};
+      }
+
+      body {
+        background-color: var(--color-primario);
+        color: var(--color-secundario);
+      }
+
+      .business-logo {
+        width: 50px;
+        height: 50px;
+      }
+
+      .btn-custom {
+        background-color: var(--color-primario);
+        color: var(--color-secundario);
+      }
+
+      .dropdown-menu a:hover {
+        background-color: #f1f1f1;
+      }
+    </style>
   </head>
-  <style>
-    /* Aplica los colores del negocio a la plantilla */
-    :root {
-      --color-primario: {{ negocio.color_primario }};
-      --color-secundario: {{ negocio.color_secundario }};
-      --color-terciario: {{ negocio.color_terciario }};
-    }
-
-    body {
-      background-color: var(--color-primario);
-      color: var(--color-secundario);
-    }
-
-    img {
-      width: 50px;
-      height: 50px;
-    }
-
-    table {
-      border-collapse: collapse;
-    }
-
-    th, td {
-      border: 1px solid black;
-      padding: 4px;
-    }
-
-    /* Estilos para el menú desplegable */
-    .dropdown {
-      position: relative;
-      display: inline-block;
-    }
-
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      background-color: #f9f9f9;
-      min-width: 160px;
-      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-      z-index: 1;
-    }
-
-    .dropdown-content a {
-      color: black;
-      padding: 12px 16px;
-      text-decoration: none;
-      display: block;
-    }
-
-    .dropdown-content a:hover {
-      background-color: #f1f1f1;
-    }
-
-    .dropdown:hover .dropdown-content {
-      display: block;
-    }
-
-    .dropdown:hover .dropbtn {
-      background-color: #3e8e41;
-    }
-  </style>
   <body>
     <!-- Menú -->
-    <nav>
-      {% if request.user.is_authenticated %}
-        <!-- Mostrar nombre y rol del usuario -->
-        <div class="user-info">
-          <p>
-            {{ request.user.username }} <span>({{ request.user.groups.first.name }})</span>
-          </p>
-        </div>
-        <div class="business-info">
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: var(--color-terciario);">
+      <a class="navbar-brand" href="/">
+        {% if request.user.is_authenticated %}
           <img src="{{ negocio.logo.url }}" alt="Logo de {{ negocio.nombre }}" class="business-logo" />
-          <p>{{ negocio.nombre }}</p>
-        </div>
-      {% endif %}
-
-      <a href="/">Inicio</a>
-
-      {% if request.user.is_authenticated %}
-        <!-- Opción para cerrar sesión -->
-        <a href="{% url 'logout' %}" class="btn">Cerrar sesión</a>
-      {% else %}
-        <!-- Enlace para iniciar sesión si no está autenticado -->
-        <a href="{% url 'login' %}" class="btn">Iniciar Sesión</a>
-      {% endif %}
+          <span>{{ negocio.nombre }}</span>
+        {% endif %}
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          {% if request.user.is_authenticated %}
+            {% if es_administrador %}
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Administrador
+                </a>
+                <div class="dropdown-menu" aria-labelledby="adminDropdown">
+                  <a class="dropdown-item" href="{% url 'listar_usuarios' %}">Gestion usuarios</a>
+                  <a class="dropdown-item" href="{% url 'configurar_negocio' %}">Configuracion del negocio</a>
+                  <a class="dropdown-item" href="{% url 'lealtad' %}">Programa de lealtad</a>
+                </div>
+              </li>
+            {% endif %}
+            {% if es_encargado_menu %}
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="menuDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Encargado de Menú
+                </a>
+                <div class="dropdown-menu" aria-labelledby="menuDropdown">
+                  <a class="dropdown-item" href="{% url 'listar_productos' %}">Gestion productos</a>
+                  <a class="dropdown-item" href="{% url 'listar_menus' %}">Gestion menus</a>
+                </div>
+              </li>
+            {% endif %}
+            {% if es_encargado_registro %}
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="registroDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Encargado de Registro
+                </a>
+                <div class="dropdown-menu" aria-labelledby="registroDropdown">
+                  <a class="dropdown-item" href="#">Registro de pedidos</a>
+                  <a class="dropdown-item" href="#">Historial de pedidos</a>
+                </div>
+              </li>
+            {% endif %}
+            {% if es_despacho %}
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="despachoDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Despacho
+                </a>
+                <div class="dropdown-menu" aria-labelledby="despachoDropdown">
+                  <!-- Agregar enlaces pertinentes para Despacho -->
+                </div>
+              </li>
+            {% endif %}
+            {% if es_cliente %}
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="clienteDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Cliente
+                </a>
+                <div class="dropdown-menu" aria-labelledby="clienteDropdown">
+                  <a class="dropdown-item" href="{% url 'listar_menus' %}">Editar Menú del día</a>
+                  <a class="dropdown-item" href="{% url 'menu_del_dia' %}">Menú del Día</a>
+                  <a class="dropdown-item" href="{% url 'ordenar_platillo' 1 %}">Ordenar Platillo</a>
+                  <a class="dropdown-item" href="{% url 'pagar' %}">Pago</a>
+                  <a class="dropdown-item" href="{% url 'seguimiento_pedido' %}">Seguimiento de Pedido</a>
+                  <a class="dropdown-item" href="#">Pedidos</a>
+                  <a class="dropdown-item" href="#">Reclamos</a>
+                </div>
+              </li>
+            {% endif %}
+            {% if es_repartidor %}
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="repartidorDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Repartidor
+                </a>
+                <div class="dropdown-menu" aria-labelledby="repartidorDropdown">
+                  <a class="dropdown-item" href="#">Pedidos</a>
+                </div>
+              </li>
+            </ul>
+            {% endif %}
+            <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="repartidorDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ request.user.username }} <span> <br> ({{ request.user.groups.first.name }})
+              </a>
+              <div class="dropdown-menu" aria-labelledby="repartidorDropdown">
+                <a class="nav-link btn btn-custom" href="{% url 'logout' %}">Cerrar sesión</a>
+              </div>
+            </li>
+            </ul>
+            <!-- <li class="nav-item">
+              <span class="navbar-text">
+                Usuario: {{ request.user.username }} <span>({{ request.user.groups.first.name }})</span>
+              </span>
+              
+            </li> -->
+          {% else %}
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link btn btn-custom" href="{% url 'login' %}">Iniciar Sesión</a>
+            </li>
+          </ul>
+          {% endif %}
+      </div>
     </nav>
     
-    <div class="content-container">
+    <div class="container mt-4">
       {% block content %}
         <!-- El contenido de la página se insertará aquí -->       
       {% endblock %}
     </div>
 
-    <br />
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </body>
 </html>

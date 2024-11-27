@@ -8,83 +8,9 @@
       {% if user.is_authenticated %}
         <h1>Bienvenido {{ nombre_usuario }}</h1>
 
-        <p>Haz clic en el botón para acceder a otras secciones:</p>
+        <!-- <p>Haz clic en el botón para acceder a otras secciones:</p> -->
       {% else %}
         <h1>Bienvenido al inicio del sitio</h1>
-      {% endif %}
-    </div>
-
-    <div class="btn-container">
-      {% if user.is_authenticated %}
-        <!-- Enlace para el Administrador (Daniel) -->
-        {% if es_administrador %}
-          <div class="dropdown">
-            <button class="dropbtn">Administrador</button>
-            <div class="dropdown-content">
-              <a href="{% url 'listar_usuarios' %}">Gestion usuarios</a>
-              <a href="{% url 'configurar_negocio' %}">Configuracion del negocio</a>
-              <a href="{% url 'lealtad' %}">Programa de lealtad</a>
-            </div>
-          </div>
-        {% endif %}
-
-        <!-- Enlace para el Encargado de Menú (Carlos) -->
-        {% if es_encargado_menu %}
-          <div class="dropdown">
-            <button class="dropbtn">Encargado de Menú</button>
-            <div class="dropdown-content">
-              <a href="{% url 'listar_productos' %}">Gestion productos</a>
-              <a href="{% url 'listar_menus' %}">Gestion menus</a>
-            </div>
-          </div>
-        {% endif %}
-
-        <!-- Enlace para el Encargado de Registro de Pedidos (Kike) -->
-        {% if es_encargado_registro %}
-          <div class="dropdown">
-            <button class="dropbtn">Encargado de Registro</button>
-            <div class="dropdown-content">
-              <a href="#">Registro de pedidos</a>
-              <a href="#">Historial de pedidos</a>
-            </div>
-          </div>
-        {% endif %}
-
-        <!-- Enlace para el Despacho de Pedidos (Kenet) -->
-        {% if es_despacho %}
-          <div class="dropdown">
-            <button class="dropbtn">Despacho</button>
-            <div class="dropdown-content">
-              <!-- Agregar enlaces pertinentes para Despacho -->
-            </div>
-          </div>
-        {% endif %}
-
-        <!-- Enlace para el Cliente -->
-        {% if es_cliente %}
-          <div class="dropdown">
-            <button class="dropbtn">Cliente</button>
-            <div class="dropdown-content">
-              <a href="{% url 'listar_menus' %}">Editar Menú del día</a>
-              <a href="{% url 'menu_del_dia' %}">Menú del Día</a>
-              <a href="{% url 'ordenar_platillo' 1 %}">Ordenar Platillo</a>
-              <a href="{% url 'pagar' %}">Pago</a>
-              <a href="{% url 'seguimiento_pedido' %}">Seguimiento de Pedido</a>
-              <a href="#">Pedidos</a>
-              <a href="#">Reclamos</a>
-            </div>
-          </div>
-        {% endif %}
-
-        <!-- Enlace para el Repartidor -->
-        {% if es_repartidor %}
-          <div class="dropdown">
-            <button class="dropbtn">Repartidor</button>
-            <div class="dropdown-content">
-              <a href="#">Pedidos</a>
-            </div>
-          </div>
-        {% endif %}
       {% endif %}
     </div>
   </body>
