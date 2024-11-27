@@ -14,7 +14,11 @@ SECRET_KEY = 'django-insecure-es+9xi+=h8$1o-l2e96a6plub_ko*9zqkiaox=#0hg0i02ctox
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['34.72.177.176']
+#Cuando la aplicacion este local, descomentar la siguiente linea
+ALLOWED_HOSTS = ['127.0.0.1']
+
+#Cuando la aplicacion este en produccion, descomentar la siguiente linea
+#ALLOWED_HOSTS = ['34.72.177.176']
 
 # settings.py
 LOGIN_URL = 'login'  # Asegura que se redirija a la URL del login personalizado
