@@ -14,7 +14,7 @@ SECRET_KEY = 'django-insecure-es+9xi+=h8$1o-l2e96a6plub_ko*9zqkiaox=#0hg0i02ctox
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['34.72.177.176']
 
 # settings.py
 LOGIN_URL = 'login'  # Asegura que se redirija a la URL del login personalizado
@@ -113,7 +113,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
