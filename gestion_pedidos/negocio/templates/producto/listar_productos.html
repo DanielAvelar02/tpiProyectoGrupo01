@@ -1,48 +1,59 @@
 {% extends 'base_generic.html' %} {% block title %}
-Productos
+  Productos
 {% endblock %}
 {% block content %}
-<h1>Vista en proceso</h1>
-<p>Catalogo de Productos</p>
-<h1>Negocio: {{negocio.nombre}}</h1>
-<table>
-  <thead>
-    <tr>
-      <th>Nombre</th>
-      <th>Precio</th>
-      <th>Cantidad Disponible</th>
-      <th>Activo</th>
-      <th>Editar</th>
-      <th>Eliminar</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for producto in productos %}
-    <tr>
-      <td>{{producto.nombre}}</td>
-      <td>{{producto.precio}}</td>
-      <td>{{producto.cantidad_disponible}}</td>
-      {% if producto.activo %}
-      <td>
-        <form action="{% url 'cambiar_estado_producto' producto.id %}" method="post" style="display: inline;">
-          {% csrf_token %}
-          <button type="submit" style="background-color: red;">Desactivar</button>
-        </form>
-      </td>
-      {% else %}
-      <td>
-        <form action="{% url 'cambiar_estado_producto' producto.id %}" method="post" style="display: inline;">
-          {% csrf_token %}
-          <button type="submit" style="background-color: green;">Activar</button>
-        </form>
-      </td>
-      {% endif %}
-      <td><button>Editar</button></td>
-      <td><button>Eliminar</button></td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-<a href="{% url 'crear_producto' %}" class="btn">Crear producto</a>
-<a href="{% url 'inicio' %}" class="btn">Volver al inicio</a>
+  <h1>Catálogo de Productos</h1>
+  <a href="{% url 'crear_producto' %}">Crear nuevo producto</a>
+
+  <h2>Lista de Productos</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Precio</th>
+        <th>Cantidad Disponible</th>
+        <th>Activo</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for producto in productos %}
+        <tr>
+          <td>{{ producto.nombre }}</td>
+          <td>{{ producto.precio }}</td>
+          <td>{{ producto.cantidad_disponible }}</td>
+          <!-- Estado -->
+          {% if producto.activo %}
+            <td>
+              <form action="{% url 'cambiar_estado_producto' producto.id %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" style="background-color: red;">Desactivar</button>
+              </form>
+            </td>
+          {% else %}
+            <td>
+              <form action="{% url 'cambiar_estado_producto' producto.id %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" style="background-color: green;">Activar</button>
+              </form>
+            </td>
+          {% endif %}
+          <!-- Acciones -->
+          <td>
+            <form action="{% url 'editar_producto' producto.id %}" style="display: inline;">
+              {% csrf_token %}
+              <button type="submit">Editar</button>
+            </form>
+
+            <form action="{% url 'eliminar_producto' producto.id %}" method="post" style="display: inline;">
+              {% csrf_token %}
+              <button type="submit">Eliminar</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <br />
+  <a href="{% url 'inicio' %}" class="btn">Volver al inicio</a>
 {% endblock %}

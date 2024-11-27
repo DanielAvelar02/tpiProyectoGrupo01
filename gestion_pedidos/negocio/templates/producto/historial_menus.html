@@ -1,0 +1,65 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}Historial de Menús{% endblock %}
+
+{% block content %}
+<h1>Historial de Menús</h1>
+
+<!-- Menús Futuros -->
+<h2>Menús Futuros</h2>
+{% if menus_futuros %}
+  <ul>
+    {% for menu in menus_futuros %}
+      <li>
+        <strong>{{ menu.fecha }}</strong>
+        <ul>
+          {% for menu_producto in menu.menuproducto_set.all %}
+            <li>
+              {{ menu_producto.producto.nombre }} - 
+              Cantidad: {{ menu_producto.cantidad_disponible }}
+            </li>
+          {% endfor %}
+        </ul>
+        <form method="POST" action="{% url 'eliminar_menu' menu.id %}">
+          {% csrf_token %}
+          <button type="submit" onclick="return confirm('¿Estás seguro de que quieres eliminar este menú?')">
+            Eliminar
+          </button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No hay menús futuros.</p>
+{% endif %}
+
+<!-- Menús Pasados -->
+<h2>Menús Pasados</h2>
+{% if menus_pasados %}
+  <ul>
+    {% for menu in menus_pasados %}
+      <li>
+        <strong>{{ menu.fecha }}</strong>
+        <ul>
+          {% for menu_producto in menu.menuproducto_set.all %}
+            <li>
+              {{ menu_producto.producto.nombre }} - 
+              Cantidad: {{ menu_producto.cantidad_disponible }}
+            </li>
+          {% endfor %}
+        </ul>
+        <form method="POST" action="{% url 'eliminar_menu' menu.id %}">
+          {% csrf_token %}
+          <button type="submit" onclick="return confirm('¿Estás seguro de que quieres eliminar este menú?')">
+            Eliminar
+          </button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No hay menús pasados.</p>
+{% endif %}
+
+<a href="{% url 'listar_menus' %}">Volver al Menú del Día</a>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base_generic.html' %} {% block title %}
+  Usuarios
+{% endblock %}
+{% block content %}
+  {% if es_encargado_menu %}
+    <h1>Gestión de Menús</h1>
+
+    <a href="{% url 'crear_menu' %}">Crear menú</a>
+    <a href="{% url 'historial_menus' %}">Historial de menús</a>
+  {% endif %}
+
+  <h1>Menú del Día</h1>
+
+  {% if es_encargado_menu %}
+    <a href="{% url 'editar_menu' %}" class="btn btn-primary">Editar Menú</a>
+  {% endif %}
+
+  {% if menu_hoy.productos %}
+    <p>
+      <strong>Fecha:</strong> {{ menu_hoy.fecha }}
+    </p>
+    <ul>
+      {% for producto in menu_hoy.productos %}
+        <li>{{ producto.nombre }} - {{ producto.cantidad_disponible }} unidades</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No hay menú disponible para el día de hoy.</p>
+  {% endif %}
+
+  <a href="{% url 'inicio' %}" class="btn">Volver al inicio</a>
+{% endblock %}

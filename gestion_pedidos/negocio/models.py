@@ -24,6 +24,9 @@ class Producto(models.Model):
     activo = models.BooleanField(default=True)
     negocio = models.ForeignKey(Negocio, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.nombre
+
 class MenuDelDia(models.Model):
     fecha = models.DateField()
     productos = models.ManyToManyField(Producto, through='MenuProducto')

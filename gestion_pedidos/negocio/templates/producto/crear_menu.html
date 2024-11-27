@@ -1,0 +1,15 @@
+<!-- Template de Creacion de menu -->
+{% extends 'base_generic.html' %} {% block title %}
+  Crear menu
+{% endblock %}
+
+{% block content %}
+  <h1>Crear menú del dia</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Crear Menú</button>
+  </form>
+
+  <a href="{% url 'listar_menus' %}">Volver al Menú del Día</a>
+{% endblock %}
