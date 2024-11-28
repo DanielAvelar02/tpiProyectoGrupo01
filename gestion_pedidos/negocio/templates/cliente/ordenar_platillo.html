@@ -5,130 +5,31 @@
 {% endblock %}
 
 {% block menu_content %}
-  <style>
-    main {
-        padding: 40px 20px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: calc(100vh - 50px);
-        background-color: #f9f9f9;
-    }
-
-    .carrito-container {
-        display: flex;
-        gap: 40px;
-        border: 1px solid #ccc;
-        padding: 40px;
-        border-radius: 8px;
-        background-color: #fff;
-        width: 80%; /* Aumenta el ancho */
-        max-width: 1200px; /* Limita el tamaño máximo */
-    }
-
-    .carrito-detalle {
-        flex: 1;
-        text-align: left;
-    }
-
-    .carrito-detalle h3 {
-        font-size: 24px;
-        margin-bottom: 20px;
-    }
-
-    .carrito-detalle ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .carrito-detalle ul li {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        font-size: 18px;
-        margin-bottom: 15px;
-    }
-
-    .carrito-detalle ul li img {
-        width: 50px;
-        height: 50px;
-    }
-
-    .carrito-detalle p {
-        margin-top: 20px;
-        font-size: 20px;
-    }
-
-    .carrito-pago {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .carrito-imagen img {
-        width: 300px;
-        height: 300px;
-        object-fit: cover;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-    }
-
-    .btn-pagar {
-        background-color: #007BFF;
-        color: #fff;
-        border: none;
-        padding: 15px 30px;
-        font-size: 20px;
-        border-radius: 6px;
-        cursor: pointer;
-        margin-top: 20px;
-    }
-
-    .btn-pagar:hover {
-        background-color: #0056b3;
-    }
-
-
-
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }
-  </style>
-
-  <main>
-    <div class="carrito-container">
+  <h1 class="text-center my-4">Detalles de su Menú</h1>
+  <main class="container d-flex justify-content-center align-items-center" style="min-height: 80vh; margin-top: -50px;">
+    <div class="row bg-white shadow rounded p-4 w-100" style="max-width: 1200px;">
       <!-- Detalle de los productos -->
-      <div class="carrito-detalle">
+      <div class="col-md-6 mb-4">
         <h3>Incluye</h3>
-        <ul>
+        <ul class="list-unstyled">
           {% for item in platillo.incluye %}
-          <li>
-            <img src="{{ item.imagen }}" alt="Icono">
-            {{ item.nombre }}
+          <li class="d-flex align-items-center mb-3">
+            <img src="{{ item.imagen }}" alt="Imagen del producto" class="me-3" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; margin-right: 10px;">
+            <span>{{ item.nombre }}</span>
           </li>
           {% endfor %}
         </ul>
-        <p><strong>Total: ${{ platillo.precio }}</strong></p>
+        <p class="mt-4 fs-5 text-end"><strong>Total: ${{ platillo.precio }}</strong></p>
       </div>
       <!-- Imagen y botón de pago -->
-      <div class="carrito-pago">
-        <div class="carrito-imagen">
-          <img src="{{ platillo.imagen }}" alt="Imagen del producto">
+      <div class="col-md-6 d-flex flex-column align-items-center">
+        <div class="mb-4">
+          <img src="{{ platillo.imagen }}" alt="Imagen del producto" class="img-fluid rounded" style="max-width: 300px; max-height: 300px;">
         </div>
-        <button class="btn-pagar">Pagar</button>
+        <form action="{% url 'pagar' %}" method="POST">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary">Pagar</button>
+        </form>
       </div>
     </div>
   </main>
