@@ -74,9 +74,9 @@ class EditarUsuarioForm(forms.ModelForm):
   
 # Formulario para configurar el negocio
 class NegocioForm(forms.ModelForm):
-    color_primario = forms.CharField(widget=forms.TextInput(attrs={'type': 'color'}), label="Color Primario")
-    color_secundario = forms.CharField(widget=forms.TextInput(attrs={'type': 'color'}), label="Color Secundario")
-    color_terciario = forms.CharField(widget=forms.TextInput(attrs={'type': 'color'}), label="Color Terciario")
+    color_primario = forms.CharField(widget=forms.TextInput(attrs={'type': 'color'}), label="Color de Fondo")
+    color_secundario = forms.CharField(widget=forms.TextInput(attrs={'type': 'color'}), label="Color de Textos")
+    color_terciario = forms.CharField(widget=forms.TextInput(attrs={'type': 'color'}), label="Color Barra Navegacion")
 
     class Meta:
         model = Negocio

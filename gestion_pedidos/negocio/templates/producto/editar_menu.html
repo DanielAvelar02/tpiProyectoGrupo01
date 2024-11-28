@@ -1,34 +1,56 @@
-{% extends 'base_generic.html' %} {% block title %} Editar menu
-{% endblock %}
-{% block content %}
-<h2>Editar Menú del Día ({{ menu.fecha }})</h2>
+{% extends 'base_generic.html' %}
 
-<form method="POST">
-    {% csrf_token %}
-    <table>
-        <thead>
-            <tr>
-                <th>Producto</th>
-                <th>Cantidad Disponible</th>
-            </tr>
+{% block title %}
+  Editar Menú
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="card shadow-lg p-4">
+    <h2 class="text-center mb-4">Editar Menú del Día ({{ menu.fecha }})</h2>
+    <form method="POST">
+      {% csrf_token %}
+      <table class="table table-bordered">
+        <thead class="table-light">
+          <tr>
+            <th scope="col">Producto</th>
+            <th scope="col">Cantidad Disponible</th>
+          </tr>
         </thead>
         <tbody>
-            {% for producto in productos %}
-            <tr>
-                <td>
-                    <input type="checkbox" name="productos" value="{{ producto.id }}" {% if producto.id in productos_ids %}checked{% endif %}>
-                    {{ producto.nombre }}
-                </td>
-                <td>
-                    <input type="number" name="cantidades" min="1"
-                        value="{% for info in productos_info %}{% if info.id == producto.id %}{{ info.cantidad_disponible }}{% endif %}{% endfor %}">
-                </td>
-            </tr>
-            {% endfor %}
+          {% for producto in productos %}
+          <tr>
+            <td>
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="checkbox" 
+                  name="productos" 
+                  value="{{ producto.id }}" 
+                  id="producto-{{ producto.id }}"
+                  {% if producto.id in productos_ids %}checked{% endif %}>
+                <label class="form-check-label" for="producto-{{ producto.id }}">
+                  {{ producto.nombre }}
+                </label>
+              </div>
+            </td>
+            <td>
+              <input 
+                class="form-control" 
+                type="number" 
+                name="cantidades" 
+                min="1" 
+                value="{% for info in productos_info %}{% if info.id == producto.id %}{{ info.cantidad_disponible }}{% endif %}{% endfor %}">
+            </td>
+          </tr>
+          {% endfor %}
         </tbody>
-    </table>
-    <button type="submit">Guardar cambios</button>
-</form>
-
-<a href="{% url 'listar_menus' %}">Volver</a>
+      </table>
+      <button type="submit" class="btn btn-primary w-100">Guardar Cambios</button>
+    </form>
+    <div class="text-center mt-3">
+      <a href="{% url 'listar_menus' %}" class="btn btn-link">Volver</a>
+    </div>
+  </div>
+</div>
 {% endblock %}

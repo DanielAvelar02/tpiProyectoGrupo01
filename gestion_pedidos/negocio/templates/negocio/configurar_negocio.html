@@ -1,13 +1,23 @@
 <!-- negocio/templates/inicio.html -->
-{% extends 'base_generic.html' %} {% block title %}
-  Configuración del negocio
+{% extends 'base_generic.html' %}
+
+{% block title %}
+  Configuración del Negocio
 {% endblock %}
+
 {% block content %}
-  <h2>Configurar Negocio</h2>
-  <form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Guardar</button>
-  </form>
-  <a href="{% url 'inicio' %}" class="btn">Cancelar</a>
+<div class="container d-flex justify-content-center align-items-center my-5">
+  <div class="card shadow-lg p-4" style="max-width: 600px; width: 100%;">
+    <h2 class="text-center mb-4">Configurar Negocio</h2>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="mb-3">
+        <!-- Aquí se renderizan los campos del formulario -->
+        {{ form.as_p }}
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Guardar</button>
+    </form>
+    <a href="{% url 'inicio' %}" class="btn btn-link text-center mt-3">Cancelar</a>
+  </div>
+</div>
 {% endblock %}

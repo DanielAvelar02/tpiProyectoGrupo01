@@ -1,15 +1,25 @@
-<!-- Template de Creacion de menu -->
-{% extends 'base_generic.html' %} {% block title %}
-  Crear menu
+<!-- Template de Creación de menú -->
+{% extends 'base_generic.html' %}
+
+{% block title %}
+  Crear Menú
 {% endblock %}
 
 {% block content %}
-  <h1>Crear menú del dia</h1>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Crear Menú</button>
-  </form>
-
-  <a href="{% url 'listar_menus' %}">Volver al Menú del Día</a>
+<div class="container d-flex justify-content-center align-items-center my-5">
+  <div class="card shadow-lg p-4" style="max-width: 600px; width: 100%;">
+    <h1 class="text-center mb-4">Crear Menú del Día</h1>
+    <form method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        <!-- Renderiza los campos del formulario con Bootstrap -->
+        {{ form.as_p }}
+      </div>
+      <button type="submit" class="btn btn-success w-100">Crear Menú</button>
+    </form>
+    <div class="text-center mt-3">
+      <a href="{% url 'listar_menus' %}" class="btn btn-link">Volver al Menú del Día</a>
+    </div>
+  </div>
+</div>
 {% endblock %}

@@ -1,32 +1,48 @@
-{% extends 'base_generic.html' %} {% block title %}
+{% extends 'base_generic.html' %}
+
+{% block title %}
   Usuarios
 {% endblock %}
+
 {% block content %}
+<div class="container my-5">
   {% if es_encargado_menu %}
-    <h1>Gestión de Menús</h1>
-
-    <a href="{% url 'crear_menu' %}">Crear menú</a>
-    <a href="{% url 'historial_menus' %}">Historial de menús</a>
+    <div class="mb-4 text-center">
+      <h1 class="fw-bold">Gestión de Menús</h1>
+      <a href="{% url 'crear_menu' %}" class="btn btn-success m-2">Crear Menú</a>
+      <a href="{% url 'historial_menus' %}" class="btn btn-secondary m-2">Historial de Menús</a>
+    </div>
   {% endif %}
 
-  <h1>Menú del Día</h1>
+  <div class="text-center">
+    <h1 class="fw-bold">Menú del Día</h1>
+  </div>
 
   {% if es_encargado_menu %}
-    <a href="{% url 'editar_menu' %}" class="btn btn-primary">Editar Menú</a>
+    <div class="text-center my-3">
+      <a href="{% url 'editar_menu' %}" class="btn btn-primary">Editar Menú</a>
+    </div>
   {% endif %}
 
-  {% if menu_hoy.productos %}
-    <p>
-      <strong>Fecha:</strong> {{ menu_hoy.fecha }}
-    </p>
-    <ul>
-      {% for producto in menu_hoy.productos %}
-        <li>{{ producto.nombre }} - {{ producto.cantidad_disponible }} unidades</li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>No hay menú disponible para el día de hoy.</p>
-  {% endif %}
+  <div class="mt-4">
+    {% if menu_hoy.productos %}
+      <p class="fw-bold">
+        <strong>Fecha:</strong> {{ menu_hoy.fecha }}
+      </p>
+      <ul class="list-group">
+        {% for producto in menu_hoy.productos %}
+          <li class="list-group-item">
+            {{ producto.nombre }} - {{ producto.cantidad_disponible }} unidades
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-danger">No hay menú disponible para el día de hoy.</p>
+    {% endif %}
+  </div>
 
-  <a href="{% url 'inicio' %}" class="btn">Volver al inicio</a>
+  <div class="text-center mt-4">
+    <a href="{% url 'inicio' %}" class="btn btn-link">Volver al inicio</a>
+  </div>
+</div>
 {% endblock %}
