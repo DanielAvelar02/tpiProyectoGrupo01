@@ -131,7 +131,7 @@
                 {{ request.user.username }} <span> <br> ({{ request.user.groups.first.name }})
               </a>
               <div class="dropdown-menu" aria-labelledby="repartidorDropdown">
-                <a class="nav-link btn btn-custom" href="{% url 'logout' %}">Cerrar sesión</a>
+                <a class="nav-link btn" href="{% url 'logout' %}">Cerrar sesión</a>
               </div>
             </li>
             </ul>
@@ -144,7 +144,7 @@
           {% else %}
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-              <a class="nav-link btn btn-custom" href="{% url 'login' %}">Iniciar Sesión</a>
+              <a class="nav-link btn" href="{% url 'login' %}">Iniciar Sesión</a>
             </li>
           </ul>
           {% endif %}
