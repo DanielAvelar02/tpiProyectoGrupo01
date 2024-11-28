@@ -29,8 +29,9 @@
       }
 
       .btn-custom {
-        background-color: var(--color-primario);
+        background-color: var(--color-terciario);
         color: var(--color-secundario);
+        border-color: var(--color-terciario);
       }
 
       .dropdown-menu a:hover {
@@ -150,7 +151,7 @@
       </div>
     </nav>
     
-    <div class="container mt-4">
+    <div class="container-fluid mt-4 px-5" style="background-color: var(--color-primario);">
       {% block content %}
         <!-- El contenido de la página se insertará aquí -->       
       {% endblock %}
