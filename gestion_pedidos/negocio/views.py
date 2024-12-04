@@ -510,3 +510,7 @@ def seguimiento_pedido(request):
 def pedidos_view(request):
     pedidos = Pedido.objects.all()
     return render(request, 'repartidor/pedidos.html', {'pedidos': pedidos})
+
+def historial_pedidos(request):
+    pedidos = Pedido.objects.all()
+    return render(request, 'repartidor/historial_pedidos.html', {'pedidos': pedidos})

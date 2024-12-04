@@ -51,4 +51,6 @@ urlpatterns = [
 
     #Moises Modificaciones
     path('repartidor/pedidos/', views.pedidos_view, name='pedidos'),
+    path('repartidor/historial_pedidos/', views.historial_pedidos, name='historial_pedidos'),
+    
 ]

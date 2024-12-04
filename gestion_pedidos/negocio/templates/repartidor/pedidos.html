@@ -31,5 +31,8 @@
       {% endfor %}
     </tbody>
   </table>
-  <a href="#" class="btn btn-secondary mt-3">Historial de pedidos</a>
+  <a href="{% url 'historial_pedidos' %}" class="btn btn-secondary mt-3">Historial de pedidos</a>
+  <div class="text-right mt-3">
+    <a href="{% url 'inicio' %}" class="btn btn-secondary">Volver a inicio</a>
+  </div>
 {% endblock %}
