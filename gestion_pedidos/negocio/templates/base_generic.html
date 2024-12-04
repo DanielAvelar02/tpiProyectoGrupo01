@@ -120,7 +120,11 @@
                   Repartidor
                 </a>
                 <div class="dropdown-menu" aria-labelledby="repartidorDropdown">
-                  <a class="dropdown-item" href="#">Pedidos</a>
+                  <a class="dropdown-item" href="{% url 'activar_app' %}">Entregar Pedidos</a>
+                  <a class="dropdown-item" href="{% url 'asignacion_pedidos' %}">pedidos asignados</a>
+                  <a class="dropdown-item" href="{% url 'detalle_pedido' %}">detalles de pedido a entregar</a>
+                  <a class="dropdown-item" href="{% url 'historial_pedidos' %}">historial </a>
+
                 </div>
               </li>
             </ul>
