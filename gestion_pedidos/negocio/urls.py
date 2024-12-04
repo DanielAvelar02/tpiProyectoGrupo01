@@ -48,4 +48,7 @@ urlpatterns = [
     path('ordenar-platillo/<int:platillo_id>/', views.ordenar_platillo, name='ordenar_platillo'),
     path('pagar/', views.pagar, name='pagar'),
     path('seguimiento-pedido/', views.seguimiento_pedido, name='seguimiento_pedido'),
+
+    #Moises Modificaciones
+    path('repartidor/pedidos/', views.pedidos_view, name='pedidos'),
 ]
