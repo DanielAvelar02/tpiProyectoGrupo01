@@ -48,4 +48,17 @@ urlpatterns = [
     path('ordenar-platillo/<int:platillo_id>/', views.ordenar_platillo, name='ordenar_platillo'),
     path('pagar/', views.pagar, name='pagar'),
     path('seguimiento-pedido/', views.seguimiento_pedido, name='seguimiento_pedido'),
+
+
+    #-------------------------------
+    #Pantallas repartidor
+    #-------------------------------
+
+
+    path('repartidor/activar_app/', views.activar_app, name='activar_app'),
+    path('repartidor/asignacion_pedidos/', views.asignacion_pedidos, name='asignacion_pedidos'),
+    path('repartidor/detalle_pedido/', views.detalle_pedido, name='detalle_pedido'),
+    path('repartidor/historial_pedidos/', views.historial_pedidos, name='historial_pedidos'),
+
+
 ]

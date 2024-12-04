@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Negocio, Producto, MenuDelDia, MenuProducto #se importan los modelos
+from .models import Negocio, Producto, MenuDelDia, MenuProducto, Pedido #se importan los modelos
 from .forms import EditarUsuarioForm, NegocioForm, CrearUsuarioForm, RegistrarClienteForm, CrearMenuForm #se importan los formularios
 from django.contrib.auth.forms import AuthenticationForm 
 from django.contrib.auth import authenticate, login, logout
@@ -506,3 +506,22 @@ def pagar(request):
 def seguimiento_pedido(request):
     return render(request, 'cliente/seguimiento_pedido.html')
 
+    #-------------------------------
+    #Pantallas repartidor
+    #-------------------------------
+
+def activar_app(request):
+    pedidos = Pedido.objects.all()
+    return render(request, 'repartidor/activar_app.html', {'pedidos': pedidos})
+
+def asignacion_pedidos(request):
+    pedidos = Pedido.objects.all()
+    return render(request, 'repartidor/asignacion_pedidos.html', {'pedidos': pedidos})
+
+def detalle_pedido(request):
+    pedidos = Pedido.objects.all()
+    return render(request, 'repartidor/detalle_pedido.html', {'pedidos': pedidos})
+
+def historial_pedidos(request):
+    pedidos = Pedido.objects.all()
+    return render(request, 'repartidor/historial_pedidos.html', {'pedidos': pedidos})

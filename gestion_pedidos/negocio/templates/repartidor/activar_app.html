@@ -1,0 +1,99 @@
+{% extends 'base_generic.html' %}
+{% block title %}
+  Activar o desactivar estado
+{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Estado del Repartidor</h2>
+    <div class="d-flex justify-content-center">
+        <div class="switch">
+            <input type="checkbox" id="estadoRepartidor" class="switch-input" onchange="toggleEstado()" />
+            <label for="estadoRepartidor" class="switch-label"></label>
+        </div>
+    </div>
+    <div class="text-center mt-3">
+        <span id="estadoLabel" class="estado-text text-danger">Inactivo</span>
+    </div>
+    <div class="text-center mt-4">
+        <button id="asignacionButton" class="btn btn-primary d-none" onclick="irAsignacion()">Ir a Asignación de Pedidos</button>
+    </div>
+</div>
+
+<style>
+    .switch {
+        position: relative;
+        width: 60px;
+        height: 30px;
+    }
+
+    .switch-input {
+        display: none;
+    }
+
+    .switch-label {
+        display: block;
+        width: 100%;
+        height: 100%;
+        background-color: #ccc;
+        border-radius: 30px;
+        cursor: pointer;
+        position: relative;
+        transition: background-color 0.3s ease;
+    }
+
+    .switch-label::before {
+        content: '';
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 24px;
+        height: 24px;
+        background-color: white;
+        border-radius: 50%;
+        transition: transform 0.3s ease;
+    }
+
+    .switch-input:checked + .switch-label {
+        background-color: #4caf50;
+    }
+
+    .switch-input:checked + .switch-label::before {
+        transform: translateX(30px);
+    }
+
+    .estado-text {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .d-none {
+        display: none !important;
+    }
+</style>
+
+<script>
+    function toggleEstado() {
+        const estadoInput = document.getElementById('estadoRepartidor');
+        const estadoLabel = document.getElementById('estadoLabel');
+        const asignacionButton = document.getElementById('asignacionButton');
+        
+        if (estadoInput.checked) {
+            estadoLabel.textContent = 'Activo';
+            estadoLabel.classList.remove('text-danger');
+            estadoLabel.classList.add('text-success');
+            asignacionButton.classList.remove('d-none');
+        } else {
+            estadoLabel.textContent = 'Inactivo';
+            estadoLabel.classList.remove('text-success');
+            estadoLabel.classList.add('text-danger');
+            asignacionButton.classList.add('d-none');
+        }
+    }
+
+    function irAsignacion() {
+        // Aquí redirige a la página de asignación de pedidos.
+        // Cambia '/asignacion-pedidos/' por la URL real de la página.
+        window.location.href = '/negocio/repartidor/asignacion_pedidos/';
+    }
+</script>
+{% endblock %}

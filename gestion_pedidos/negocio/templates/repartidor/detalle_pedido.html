@@ -1,0 +1,59 @@
+{% extends 'base_generic.html' %} 
+{% block title %}
+  Detalles del pedido a entregar
+{% endblock %} 
+
+{% block content %}
+  <div class="container mt-5">
+    <h1 class="mb-4">Detalles del pedido a entregar</h1>
+    <div class="row">
+      <!-- Imagen del platillo a la izquierda -->
+      <div class="col-md-4">
+        <img src="{https://cdn-icons-png.freepik.com/256/8685/8685621.png?semt=ais_hybrid}" alt="Platillo" class="img-fluid">
+      </div>
+
+      <!-- Detalles del pedido a la derecha -->
+      <div class="col-md-8">
+        <form>
+          <div class="form-group">
+            <label for="nombre_cliente">Nombre del cliente:</label>
+            
+          </div>
+          <div class="form-group">
+            <label for="detalle_pedido">Detalle del pedido:</label>
+            
+          </div>
+          <div class="form-group">
+            <label for="direccion_entrega">Dirección de entrega:</label>
+
+          </div>
+
+          <!-- Mapa interactivo con Leaflet -->
+          <div id="mapa" style="height: 300px; width: 100%; margin-bottom: 20px;">
+            <div id="leaflet-map" style="height: 100%;"></div>
+          </div>
+
+          <!-- Botón de entrega realizada -->
+          <button type="button" class="btn btn-success" onclick="location.href='/negocio/repartidor/asignacion_pedidos/'">Entrega realizada</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts necesarios para Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    var map = L.map('leaflet-map').setView([40.748817, -73.985428], 13);  // Coordenadas de ejemplo (Estatua de la Libertad)
+    
+    // Agregar un mapa de OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Agregar un marcador en las coordenadas especificadas
+    L.marker([40.748817, -73.985428]).addTo(map)
+      .bindPopup("<b>Restaurante</b><br>Ubicación del pedido.")
+      .openPopup();
+  </script>
+{% endblock %}
