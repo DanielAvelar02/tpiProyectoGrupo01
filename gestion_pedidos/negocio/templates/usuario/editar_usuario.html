@@ -1,18 +1,23 @@
-{% extends 'base_generic.html' %} {% block title %}
+{% extends 'base_generic.html' %} 
+{% block title %}
   Editar usuario
 {% endblock %}
 {% block content %}
-  <h1>Editar usuario: {{ usuario.username }}</h1>
+  <div class="container mt-5">
+    <h1 class="mb-4">Editar usuario: {{ usuario.username }}</h1>
 
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
+    <form method="post" class="needs-validation" novalidate>
+      {% csrf_token %}
+      {{ form.as_p }}
 
-    {% if es_unico_admin %}
-      <p>No puedes cambiar tu propio rol porque eres el único administrador.</p>
-    {% endif %}
+      {% if es_unico_admin %}
+        <div class="alert alert-warning" role="alert">
+          No puedes cambiar tu propio rol porque eres el único administrador.
+        </div>
+      {% endif %}
 
-    <button type="submit">Guardar Cambios</button>
-    <a href="{% url 'listar_usuarios' %}">Cancelar</a>
-  </form>
+      <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+      <a href="{% url 'listar_usuarios' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+  </div>
 {% endblock %}

@@ -1,12 +1,15 @@
-{% extends 'base_generic.html' %} {% block title %}
+{% extends 'base_generic.html' %} 
+{% block title %}
   Registrar usuario
 {% endblock %}
 {% block content %}
-  <h1>Registrar usuario</h1>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Crear Usuario</button>
-  </form>
-  <a href="{% url 'listar_usuarios' %}" class="btn">Cancelar</a>
+  <div class="container mt-5">
+    <h1 class="mb-4">Registrar usuario</h1>
+    <form method="post" class="needs-validation" novalidate>
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-primary">Crear Usuario</button>
+      <a href="{% url 'listar_usuarios' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+  </div>
 {% endblock %}
