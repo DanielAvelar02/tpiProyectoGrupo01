@@ -56,7 +56,7 @@ ROOT_URLCONF = 'gestion_pedidos.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # Asegúrate de que esta ruta exista
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

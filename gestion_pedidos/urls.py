@@ -7,6 +7,7 @@ from django.conf.urls.static import static # Importar la función para servir ar
 
 urlpatterns = [
     path('admin/', admin.site.urls), # Ruta de administrador de Django
+    path('accounts/', include('django.contrib.auth.urls')),  # Asegúrate de incluir las URLs de autenticación
     path('accounts/login/', negocio_views.custom_login, name='login'), #Ruta para el login personalizado
     path('logout/', negocio_views.custom_logout, name='logout'), #Ruta para el logout personalizado
     path('', negocio_views.inicio, name='inicio'),  # Ruta de la vista de inicio
