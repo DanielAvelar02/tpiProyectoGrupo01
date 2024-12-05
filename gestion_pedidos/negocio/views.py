@@ -249,14 +249,24 @@ def crear_producto(request):
         nombre = request.POST.get('nombre')
         precio = request.POST.get('precio')
         cantidad_disponible = request.POST.get('cantidad')
+        imagen = request.FILES.get('imagen')
         negocio = Negocio.objects.first()
+
+        # Validar que se suba una imagen
+        if not imagen:
+            return render(request, 'producto/crear_producto.html', {'accion': accion, 'action': action, 'error': 'Debe subir una imagen del producto'})
+
+        # Validar que no exista un producto con el mismo nombre
+        if Producto.objects.filter(nombre=nombre).exists():
+            return render(request, 'producto/crear_producto.html', {'accion': accion, 'action': action, 'error': 'Ya existe un producto con este nombre'})
+
         if nombre and precio and cantidad_disponible is not None:
             try:
                 precio = float(precio)
                 cantidad_disponible = int(cantidad_disponible)
             except ValueError:
                 return render(request, 'producto/crear_producto.html', {'accion': accion, 'action': action,'error': 'El precio debe ser un número decimal y la cantidad debe ser un número entero'})
-            producto = Producto(nombre=nombre, precio=precio, cantidad_disponible=cantidad_disponible, negocio=negocio)
+            producto = Producto(nombre=nombre, precio=precio, cantidad_disponible=cantidad_disponible, negocio=negocio, imagen=imagen)
             producto.save()
             return redirect('listar_productos')
         else:
@@ -270,6 +280,11 @@ def cambiar_estado_producto(request, producto_id):
     producto.save()
     return redirect('listar_productos')
 
+import os
+from django.conf import settings
+
+@login_required
+@user_passes_test(es_encargado_menu)
 def editar_producto(request, producto_id):
     accion = 'Guardar cambios'
     action = '/negocio/editar-producto/' + str(producto_id)
@@ -278,6 +293,12 @@ def editar_producto(request, producto_id):
         nombre = request.POST.get('nombre')
         precio = request.POST.get('precio')
         cantidad_disponible = request.POST.get('cantidad')
+        imagen = request.FILES.get('imagen')
+        
+        # Validar que no exista un producto con el mismo nombre (excepto el actual)
+        if Producto.objects.filter(nombre=nombre).exclude(id=producto_id).exists():
+            return render(request, 'producto/crear_producto.html', {'producto': producto, 'accion': accion, 'action': action, 'error': 'Ya existe un producto con este nombre'})
+
         if nombre and precio and cantidad_disponible is not None:
             try:
                 precio = float(precio)
@@ -287,6 +308,12 @@ def editar_producto(request, producto_id):
             producto.nombre = nombre
             producto.precio = precio
             producto.cantidad_disponible = cantidad_disponible
+            if imagen:
+                # Eliminar la imagen anterior si existe
+                if producto.imagen:
+                    if os.path.isfile(producto.imagen.path):
+                        os.remove(producto.imagen.path)
+                producto.imagen = imagen
             producto.save()
             return redirect('listar_productos')
         else:
@@ -294,8 +321,13 @@ def editar_producto(request, producto_id):
     else:
         return render(request, 'producto/crear_producto.html', {'producto': producto, 'accion': accion, 'action': action})
 
+@login_required
+@user_passes_test(es_encargado_menu)
 def eliminar_producto(request, producto_id):
     producto = get_object_or_404(Producto, id=producto_id)
+    if producto.imagen:
+        if os.path.isfile(producto.imagen.path):
+            os.remove(producto.imagen.path)
     producto.delete()
     return redirect('listar_productos')
 

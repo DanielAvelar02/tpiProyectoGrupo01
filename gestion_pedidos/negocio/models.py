@@ -23,6 +23,7 @@ class Producto(models.Model):
     cantidad_disponible = models.IntegerField()
     activo = models.BooleanField(default=True)
     negocio = models.ForeignKey(Negocio, on_delete=models.CASCADE)
+    imagen = models.ImageField(upload_to='productos/', null=True, blank=True)  # Nuevo campo de imagen
 
     def __str__(self):
         return self.nombre
