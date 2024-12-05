@@ -73,7 +73,10 @@ def inicio(request):
             tipo_usuario = "Repartidor"
         
     # Obtener datos del negocio
-    negocio = Negocio.objects.first()  # Obtener el primer negocio (unico xD)
+    try:
+        negocio = Negocio.objects.first()
+    except:
+        negocio = None
     
     # Pasar las variables al contexto
     return render(request, 'inicio.html', {
@@ -85,6 +88,7 @@ def inicio(request):
         'es_repartidor': es_repartidor,
         'nombre_usuario': nombre_usuario,
         'tipo_usuario': tipo_usuario,
+        'negocio': negocio,
     })    
  
 # Verificar si el usuario es Administrador
@@ -515,3 +519,39 @@ def pedidos_view(request):
 def historial_pedidos(request):
     pedidos = Pedido.objects.all()
     return render(request, 'repartidor/historial_pedidos.html', {'pedidos': pedidos})
+
+#-------------------------------
+#Kenet Modificaciones INICIO
+#-------------------------------
+
+@login_required
+def despacho_pedidos(request):
+    # Obtener todos los pedidos que están en estado PENDIENTE o PREPARANDO
+    pedidos = Pedido.objects.filter(
+        estado__in=['PENDIENTE', 'PREPARANDO', 'LISTO']
+    ).order_by('-fecha_pedido')
+    
+    return render(request, 'despacho/despachoDePedidos.html', {
+        'pedidos': pedidos,
+        'title': 'Despacho de Pedidos'
+    })
+
+@login_required
+def actualizar_estado_pedido(request, pedido_id):
+    if request.method == 'POST':
+        try:
+            pedido = get_object_or_404(Pedido, id=pedido_id)
+            nuevo_estado = request.POST.get('nuevo_estado')
+            if nuevo_estado in dict(Pedido.ESTADO_CHOICES):
+                pedido.estado = nuevo_estado
+                pedido.save()
+                messages.success(request, f'Pedido #{pedido_id} actualizado a {nuevo_estado}')
+            else:
+                messages.error(request, 'Estado no válido')
+        except Exception as e:
+            messages.error(request, f'Error al actualizar el pedido: {str(e)}')
+    return redirect('despacho_pedidos')
+
+#-------------------------------
+#Kener Modificaciones FIN
+#-------------------------------
