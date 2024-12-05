@@ -260,7 +260,7 @@ def crear_producto(request):
         if Producto.objects.filter(nombre=nombre).exists():
             return render(request, 'producto/crear_producto.html', {'accion': accion, 'action': action, 'error': 'Ya existe un producto con este nombre'})
 
-        if nombre and precio and cantidad_disponible is not None:
+        if nombre is not None and precio is not None and cantidad_disponible is not None:
             try:
                 precio = float(precio)
                 cantidad_disponible = int(cantidad_disponible)
@@ -506,29 +506,27 @@ def eliminar_menu(request, menu_id):
 
 from django.shortcuts import render
 
+@login_required
+@user_passes_test(es_encargado_menu)
 def menu_del_dia(request):
-    # Aquí puedes obtener los platos del modelo si estuvieran definidos
-    platos = [
-        {"nombre": "Plato 1", "imagen": "https://via.placeholder.com/100"},
-        {"nombre": "Plato 2", "imagen": "https://via.placeholder.com/100"},
-        {"nombre": "Plato 3", "imagen": "https://via.placeholder.com/100"},
-        {"nombre": "Plato 4", "imagen": "https://via.placeholder.com/100"},
-        {"nombre": "Plato 5", "imagen": "https://via.placeholder.com/100"},
-        {"nombre": "Plato 6", "imagen": "https://via.placeholder.com/100"},
-    ]
-    return render(request, 'cliente/menu_del_dia.html', {'platos': platos})
+    hoy = date.today()
+    print(hoy)
+    menu_hoy = MenuDelDia.objects.filter(fecha=hoy).first()
+    print(menu_hoy)
+    productos = []
+
+    if menu_hoy:
+        productos = menu_hoy.productos.all()
+    print(productos)
+    return render(request, 'cliente/menu_del_dia.html', {'productos': productos})
 
 def ordenar_platillo(request, platillo_id):
-    # Simulación de datos del platillo
+    producto = get_object_or_404(Producto, id=platillo_id)
     platillo = {
-        'nombre': 'Hamburguesa Especial',
-        'precio': 7.99,
-        'imagen': 'https://via.placeholder.com/300',
-        'incluye': [
-            {'nombre': 'Papas', 'imagen': 'https://via.placeholder.com/50'},
-            {'nombre': 'Soda', 'imagen': 'https://via.placeholder.com/50'},
-            {'nombre': 'Hamburguesa', 'imagen': 'https://via.placeholder.com/50'}
-        ]
+        'nombre': producto.nombre,
+        'precio': producto.precio,
+        'imagen': producto.imagen.url,
+        'cantidad_disponible': producto.cantidad_disponible,
     }
     return render(request, 'cliente/ordenar_platillo.html', {'platillo': platillo})
 

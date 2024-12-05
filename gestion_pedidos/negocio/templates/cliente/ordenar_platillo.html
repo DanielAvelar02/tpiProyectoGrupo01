@@ -10,16 +10,11 @@
     <div class="row bg-white shadow rounded p-4 w-100" style="max-width: 1200px;">
       <!-- Detalle de los productos -->
       <div class="col-md-6 mb-4">
-        <h3>Incluye</h3>
-        <ul class="list-unstyled">
-          {% for item in platillo.incluye %}
-          <li class="d-flex align-items-center mb-3">
-            <img src="{{ item.imagen }}" alt="Imagen del producto" class="me-3" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; margin-right: 10px;">
-            <span>{{ item.nombre }}</span>
-          </li>
-          {% endfor %}
-        </ul>
+        <h3>Detalles</h3>
+        <p class="mt-4 fs-5 text-end">
+          <strong>{{ platillo.nombre }}</strong></p>
         <p class="mt-4 fs-5 text-end"><strong>Total: ${{ platillo.precio }}</strong></p>
+        <p class="mt-4 fs-5 text-end"><strong>Cantidad Disponible: {{ platillo.cantidad_disponible }}</strong></p>
       </div>
       <!-- Imagen y botón de pago -->
       <div class="col-md-6 d-flex flex-column align-items-center">
