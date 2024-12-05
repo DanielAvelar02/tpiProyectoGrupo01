@@ -527,29 +527,31 @@ def menu_del_dia(request):
 @login_required
 @user_passes_test(es_cliente)
 def agregar_al_carrito(request, producto_id):
-    hoy = date.today()
-    menu_hoy = MenuDelDia.objects.filter(fecha=hoy).first()
-    producto = get_object_or_404(Producto, id=producto_id, activo=True)
-    menu_producto = get_object_or_404(MenuProducto, menu=menu_hoy, producto=producto)
-    cantidad = int(request.POST.get('cantidad', 1))
-    if cantidad > menu_producto.cantidad_disponible:
-        messages.error(request, f'La cantidad de "{producto.nombre}" excede la disponible.')
+    if request.method == 'POST':
+        hoy = date.today()
+        menu_hoy = MenuDelDia.objects.filter(fecha=hoy).first()
+        producto = get_object_or_404(Producto, id=producto_id, activo=True)
+        print(producto)
+        menu_producto = get_object_or_404(MenuProducto, menu=menu_hoy, producto=producto)
+        cantidad = int(request.POST.get('cantidad', 1))
+        if cantidad > menu_producto.cantidad_disponible:
+            messages.error(request, f'La cantidad de "{producto.nombre}" excede la disponible.')
+            return redirect('menu_del_dia')
+
+        carrito = request.session.get('carrito', {})
+        if str(producto_id) in carrito:
+            carrito[str(producto_id)] += cantidad
+        else:
+            carrito[str(producto_id)] = cantidad
+        # Decrease the available quantity in MenuProducto and Producto
+        menu_producto.cantidad_disponible -= cantidad
+        menu_producto.save()
+        producto.cantidad_disponible -= cantidad
+        producto.save()
+        request.session['carrito'] = carrito
+        messages.success(request, f'Agregado {cantidad} de "{producto.nombre}" al carrito.')
         return redirect('menu_del_dia')
 
-    carrito = request.session.get('carrito', {})
-    if str(producto_id) in carrito:
-        carrito[str(producto_id)] += cantidad
-    else:
-        carrito[str(producto_id)] = cantidad
-
-    # Decrease the available quantity in MenuProducto and Producto
-    menu_producto.cantidad_disponible -= cantidad
-    menu_producto.save()
-    producto.cantidad_disponible -= cantidad
-    producto.save()
-    request.session['carrito'] = carrito
-    messages.success(request, f'Agregado {cantidad} de "{producto.nombre}" al carrito.')
-    return redirect('menu_del_dia')
 
 @login_required
 @user_passes_test(es_cliente)
@@ -594,43 +596,6 @@ def pedidos_view(request):
 def historial_pedidos(request):
     pedidos = Pedido.objects.all()
     return render(request, 'repartidor/historial_pedidos.html', {'pedidos': pedidos})
-
-@login_required
-@user_passes_test(es_cliente)
-def agregar_al_carrito(request, producto_id):
-    producto = get_object_or_404(Producto, id=producto_id, activo=True)
-    cantidad = int(request.POST.get('cantidad', 1))
-
-    if cantidad > producto.cantidad_disponible:
-        messages.error(request, f'La cantidad de "{producto.nombre}" excede la disponible.')
-        return redirect('menu_del_dia')
-
-    carrito = request.session.get('carrito', {})
-    if str(producto_id) in carrito:
-        carrito[str(producto_id)] += cantidad
-    else:
-        carrito[str(producto_id)] = cantidad
-
-    # Decrease the available quantity
-    producto.cantidad_disponible -= cantidad
-    producto.save()
-
-    request.session['carrito'] = carrito
-    messages.success(request, f'Agregado {cantidad} de "{producto.nombre}" al carrito.')
-    return redirect('menu_del_dia')
-
-@login_required
-@user_passes_test(es_cliente)
-def cancelar_compra(request):
-    carrito = request.session.get('carrito', {})
-    for producto_id, cantidad in carrito.items():
-        producto = get_object_or_404(Producto, id=producto_id)
-        producto.cantidad_disponible += cantidad
-        producto.save()
-
-    request.session['carrito'] = {}
-    messages.success(request, 'Compra cancelada y carrito vaciado.')
-    return redirect('menu_del_dia')
 
 @login_required
 @user_passes_test(es_cliente)
