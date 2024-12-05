@@ -16,10 +16,10 @@ SECRET_KEY = 'django-insecure-es+9xi+=h8$1o-l2e96a6plub_ko*9zqkiaox=#0hg0i02ctox
 DEBUG = False
 
 #Cuando la aplicacion este local, descomentar la siguiente linea
-ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = []
 
 #Cuando la aplicacion este en produccion, descomentar la siguiente linea
-#ALLOWED_HOSTS = ['34.72.177.176']
+ALLOWED_HOSTS = ['tpiproyectogrupo01.onrender.com']
 
 # settings.py
 LOGIN_URL = 'login'  # Asegura que se redirija a la URL del login personalizado
