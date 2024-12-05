@@ -507,17 +507,15 @@ def eliminar_menu(request, menu_id):
 from django.shortcuts import render
 
 @login_required
-@user_passes_test(es_encargado_menu)
+@user_passes_test(es_cliente)
 def menu_del_dia(request):
     hoy = date.today()
-    print(hoy)
+
     menu_hoy = MenuDelDia.objects.filter(fecha=hoy).first()
-    print(menu_hoy)
     productos = []
 
     if menu_hoy:
         productos = menu_hoy.productos.all()
-    print(productos)
     return render(request, 'cliente/menu_del_dia.html', {'productos': productos})
 
 def ordenar_platillo(request, platillo_id):
