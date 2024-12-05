@@ -37,10 +37,18 @@ class MenuProducto(models.Model):
     cantidad_disponible = models.IntegerField()
 
 class Pedido(models.Model):
-    cliente = models.ForeignKey(Usuario, on_delete=models.CASCADE, limit_choices_to={'rol': 'Cliente'})
+    ESTADO_CHOICES = [
+        ('PENDIENTE', 'Pendiente'),
+        ('PREPARANDO', 'Preparando'),
+        ('LISTO', 'Listo para entrega'),
+        ('ASIGNADO', 'Asignado a repartidor'),
+        ('ENTREGADO', 'Entregado'),
+        ('CANCELADO', 'Cancelado'),
+    ]
+    cliente = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'groups__name': 'Cliente'})
     fecha_pedido = models.DateTimeField(auto_now_add=True)
     total = models.DecimalField(max_digits=10, decimal_places=2)
-    estado = models.CharField(max_length=50)
+    estado = models.CharField(max_length=50, choices=ESTADO_CHOICES, default='PENDIENTE')
     direccion_entrega = models.CharField(max_length=255)
 
 class DetallePedido(models.Model):

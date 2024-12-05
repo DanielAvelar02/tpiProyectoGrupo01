@@ -52,5 +52,14 @@ urlpatterns = [
     #Moises Modificaciones
     path('repartidor/pedidos/', views.pedidos_view, name='pedidos'),
     path('repartidor/historial_pedidos/', views.historial_pedidos, name='historial_pedidos'),
+
+    #-------------------------------
+    #Kenet Modificaciones INICIO
+    #-------------------------------
+    path('despacho_pedidos/', views.despacho_pedidos, name='despacho_pedidos'),
+    path('despacho/actualizar/<int:pedido_id>/', views.actualizar_estado_pedido, name='actualizar_estado_pedido'),
+    #-------------------------------
+    #Kener Modificaciones FIN
+    #-------------------------------
     
 ]

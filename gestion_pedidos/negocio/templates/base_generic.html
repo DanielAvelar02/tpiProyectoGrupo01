@@ -43,8 +43,10 @@
     <!-- Menú -->
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: var(--color-terciario);">
       <a class="navbar-brand" href="/">
-        {% if request.user.is_authenticated %}
-          <img src="{{ negocio.logo.url }}" alt="Logo de {{ negocio.nombre }}" class="business-logo" />
+        {% if request.user.is_authenticated and negocio %}
+          {% if negocio.logo %}
+            <img src="{{ negocio.logo.url }}" alt="Logo de {{ negocio.nombre }}" class="business-logo" />
+          {% endif %}
           <span>{{ negocio.nombre }}</span>
         {% endif %}
       </a>
@@ -94,7 +96,7 @@
                   Despacho
                 </a>
                 <div class="dropdown-menu" aria-labelledby="despachoDropdown">
-                  <!-- Agregar enlaces pertinentes para Despacho -->
+                  <a class="dropdown-item" href="{% url 'despacho_pedidos' %}">Gestionar Pedidos</a>
                 </div>
               </li>
             {% endif %}
@@ -124,24 +126,15 @@
                   <a class="dropdown-item" href="{% url 'historial_pedidos' %}">Historial pedidos</a>
                 </div>
               </li>
-            </ul>
             {% endif %}
-            <ul class="navbar-nav ml-auto">
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="repartidorDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {{ request.user.username }} <span> <br> ({{ request.user.groups.first.name }})
               </a>
-              <div class="dropdown-menu" aria-labelledby="repartidorDropdown">
+              <div class="dropdown-menu" aria-labelledby="userDropdown">
                 <a class="nav-link btn" href="{% url 'logout' %}">Cerrar sesión</a>
               </div>
             </li>
-            </ul>
-            <!-- <li class="nav-item">
-              <span class="navbar-text">
-                Usuario: {{ request.user.username }} <span>({{ request.user.groups.first.name }})</span>
-              </span>
-              
-            </li> -->
           {% else %}
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
@@ -149,6 +142,7 @@
             </li>
           </ul>
           {% endif %}
+        </ul>
       </div>
     </nav>
     
@@ -160,7 +154,7 @@
 
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </body>
 </html>
