@@ -22,10 +22,10 @@
       <tr>
         <td>{{ pedido.id }}</td>
         <td>{{ pedido.cliente }}</td>
-        <td>{{ pedido.direccion }}</td>
+        <td>{{ pedido.direccion_entrega }}</td>
         <td>{{ pedido.total }}</td>
         <td>
-          <a href="#" class="btn btn-primary">Realizar entrega</a>
+          <a href="{% url 'seguimiento_pedido' %}" class="btn btn-primary">Realizar entrega</a>
         </td>
       </tr>
       {% endfor %}

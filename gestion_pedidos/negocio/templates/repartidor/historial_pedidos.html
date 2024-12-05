@@ -25,11 +25,11 @@
           <tr>
             <td>{{ pedido.id }}</td>
             <td>{{ pedido.cliente }}</td>
-            <td>{{ pedido.direccion }}</td>
+            <td>{{ pedido.direccion_entrega }}</td>
             <td>{{ pedido.total }}</td>
-            <td>{{ pedido.fecha }}</td>
+            <td>{{ pedido.fecha_pedido }}</td>
             <td>{{ pedido.estado }}</td>
-            <td>{{ pedido.repartidor_asignado }}</td>
+            <td>{{ pedido.repartidor }}</td>
           </tr>
           {% endfor %}
         </tbody>

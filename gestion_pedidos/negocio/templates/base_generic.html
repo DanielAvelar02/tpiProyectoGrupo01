@@ -79,17 +79,7 @@
                 </div>
               </li>
             {% endif %}
-            {% if es_encargado_registro %}
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="registroDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Encargado de Registro
-                </a>
-                <div class="dropdown-menu" aria-labelledby="registroDropdown">
-                  <a class="dropdown-item" href="#">Registro de pedidos</a>
-                  <a class="dropdown-item" href="#">Historial de pedidos</a>
-                </div>
-              </li>
-            {% endif %}
+            
             {% if es_despacho %}
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="despachoDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -119,10 +109,10 @@
             {% if es_repartidor %}
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="repartidorDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Repartidor
+                  Encargado de Registro
                 </a>
                 <div class="dropdown-menu" aria-labelledby="repartidorDropdown">
-                  <a class="dropdown-item" href="{% url 'pedidos' %}">Pedidos</a>
+                  <a class="dropdown-item" href="{% url 'pedidos' %}">Registro de Pedidos</a>
                   <a class="dropdown-item" href="{% url 'historial_pedidos' %}">Historial pedidos</a>
                 </div>
               </li>
