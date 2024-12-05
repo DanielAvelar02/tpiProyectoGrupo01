@@ -555,3 +555,14 @@ def actualizar_estado_pedido(request, pedido_id):
 #-------------------------------
 #Kener Modificaciones FIN
 #-------------------------------
+
+#-------------------------------
+#KIKE Modificaciones INICIO
+#-------------------------------
+def asignacion_pedidos(request):
+    pedidos = Pedido.objects.filter(estado="Pendiente")
+    return render(request, "asignacion_pedidos.html", {"pedidos": pedidos})
+
+#-------------------------------
+#KIKE Modificaciones FIN
+#-------------------------------

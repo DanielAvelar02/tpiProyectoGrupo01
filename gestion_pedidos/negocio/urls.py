@@ -61,5 +61,14 @@ urlpatterns = [
     #-------------------------------
     #Kener Modificaciones FIN
     #-------------------------------
+
+
+    #KIKE Modificaciones INICIO
+    #-------------------------------
+   path("asignacion_pedidos/", views.asignacion_pedidos, name="asignacion_pedidos"),
+    #-------------------------------
+    #KIKE Modificaciones FIN
+    #-------------------------------
+
     
 ]
