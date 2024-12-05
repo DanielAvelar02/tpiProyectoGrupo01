@@ -7,8 +7,10 @@
 {% block menu_content %}
   <h1 class="text-center my-4">Menú del Día</h1>
   <main class="container shadow-lg p-4 rounded bg-white my-5">
-    <div class="text-center my-4">
-      <a href="{% url 'ver_carrito' %}" class="btn btn-warning">Ver Carrito</a>
+    <div class="d-flex justify-content-end my-4">
+      <a href="{% url 'ver_carrito' %}" class="btn btn-success btn-lg">
+        <i class="fas fa-shopping-cart"></i> Ver Carrito
+      </a>
     </div>
     <section class="row gy-4 justify-content-center">
       {% if productos_info %}
