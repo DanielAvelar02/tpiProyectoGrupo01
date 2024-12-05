@@ -1,0 +1,41 @@
+{% extends 'base_menu.html' %}
+
+{% block menu_title %}
+  Carrito de Compras
+{% endblock %}
+
+{% block menu_content %}
+  <h1 class="text-center my-4">Carrito de Compras</h1>
+  <main class="container">
+    <div class="row">
+      <div class="col-12">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Cantidad</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in items_carrito %}
+              <tr>
+                <td>{{ item.producto.nombre }}</td>
+                <td>{{ item.cantidad }}</td>
+                <td>${{ item.subtotal }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div class="text-end">
+          <h4>Total: ${{ total }}</h4>
+        </div>
+        <div class="text-center mt-4">
+          <a href="{% url 'menu_del_dia' %}" class="btn btn-secondary">Seguir Comprando</a>
+          <a href="{% url 'pagar' %}" class="btn btn-success">Pagar</a>
+          <a href="{% url 'cancelar_compra' %}" class="btn btn-danger">Cancelar Compra</a>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock %}

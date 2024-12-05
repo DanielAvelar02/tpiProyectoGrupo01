@@ -510,13 +510,65 @@ from django.shortcuts import render
 @user_passes_test(es_cliente)
 def menu_del_dia(request):
     hoy = date.today()
-
     menu_hoy = MenuDelDia.objects.filter(fecha=hoy).first()
-    productos = []
+    productos_info = []
 
     if menu_hoy:
-        productos = menu_hoy.productos.all()
-    return render(request, 'cliente/menu_del_dia.html', {'productos': productos})
+        for producto in menu_hoy.productos.all():
+            menu_producto = MenuProducto.objects.filter(menu=menu_hoy, producto=producto).first()
+            if menu_producto:
+                productos_info.append({
+                    'producto': producto,
+                    'cantidad_disponible': menu_producto.cantidad_disponible
+                })
+
+    return render(request, 'cliente/menu_del_dia.html', {'productos_info': productos_info})
+
+@login_required
+@user_passes_test(es_cliente)
+def agregar_al_carrito(request, producto_id):
+    hoy = date.today()
+    menu_hoy = MenuDelDia.objects.filter(fecha=hoy).first()
+    producto = get_object_or_404(Producto, id=producto_id, activo=True)
+    menu_producto = get_object_or_404(MenuProducto, menu=menu_hoy, producto=producto)
+    cantidad = int(request.POST.get('cantidad', 1))
+    if cantidad > menu_producto.cantidad_disponible:
+        messages.error(request, f'La cantidad de "{producto.nombre}" excede la disponible.')
+        return redirect('menu_del_dia')
+
+    carrito = request.session.get('carrito', {})
+    if str(producto_id) in carrito:
+        carrito[str(producto_id)] += cantidad
+    else:
+        carrito[str(producto_id)] = cantidad
+
+    # Decrease the available quantity in MenuProducto and Producto
+    menu_producto.cantidad_disponible -= cantidad
+    menu_producto.save()
+    producto.cantidad_disponible -= cantidad
+    producto.save()
+    request.session['carrito'] = carrito
+    messages.success(request, f'Agregado {cantidad} de "{producto.nombre}" al carrito.')
+    return redirect('menu_del_dia')
+
+@login_required
+@user_passes_test(es_cliente)
+def cancelar_compra(request):
+    hoy = date.today()
+    menu_hoy = MenuDelDia.objects.filter(fecha=hoy).first()
+    carrito = request.session.get('carrito', {})
+
+    for producto_id, cantidad in carrito.items():
+        producto = get_object_or_404(Producto, id=producto_id)
+        menu_producto = get_object_or_404(MenuProducto, menu=menu_hoy, producto=producto)
+        menu_producto.cantidad_disponible += cantidad
+        menu_producto.save()
+        producto.cantidad_disponible += cantidad
+        producto.save()
+
+    request.session['carrito'] = {}
+    messages.success(request, 'Compra cancelada y carrito vaciado.')
+    return redirect('menu_del_dia')
 
 def ordenar_platillo(request, platillo_id):
     producto = get_object_or_404(Producto, id=platillo_id)
@@ -542,3 +594,57 @@ def pedidos_view(request):
 def historial_pedidos(request):
     pedidos = Pedido.objects.all()
     return render(request, 'repartidor/historial_pedidos.html', {'pedidos': pedidos})
+
+@login_required
+@user_passes_test(es_cliente)
+def agregar_al_carrito(request, producto_id):
+    producto = get_object_or_404(Producto, id=producto_id, activo=True)
+    cantidad = int(request.POST.get('cantidad', 1))
+
+    if cantidad > producto.cantidad_disponible:
+        messages.error(request, f'La cantidad de "{producto.nombre}" excede la disponible.')
+        return redirect('menu_del_dia')
+
+    carrito = request.session.get('carrito', {})
+    if str(producto_id) in carrito:
+        carrito[str(producto_id)] += cantidad
+    else:
+        carrito[str(producto_id)] = cantidad
+
+    # Decrease the available quantity
+    producto.cantidad_disponible -= cantidad
+    producto.save()
+
+    request.session['carrito'] = carrito
+    messages.success(request, f'Agregado {cantidad} de "{producto.nombre}" al carrito.')
+    return redirect('menu_del_dia')
+
+@login_required
+@user_passes_test(es_cliente)
+def cancelar_compra(request):
+    carrito = request.session.get('carrito', {})
+    for producto_id, cantidad in carrito.items():
+        producto = get_object_or_404(Producto, id=producto_id)
+        producto.cantidad_disponible += cantidad
+        producto.save()
+
+    request.session['carrito'] = {}
+    messages.success(request, 'Compra cancelada y carrito vaciado.')
+    return redirect('menu_del_dia')
+
+@login_required
+@user_passes_test(es_cliente)
+def ver_carrito(request):
+    carrito = request.session.get('carrito', {})
+    productos = Producto.objects.filter(id__in=carrito.keys())
+    items_carrito = []
+
+    for producto in productos:
+        items_carrito.append({
+            'producto': producto,
+            'cantidad': carrito[str(producto.id)],
+            'subtotal': producto.precio * carrito[str(producto.id)]
+        })
+
+    total = sum(item['subtotal'] for item in items_carrito)
+    return render(request, 'cliente/ver_carrito.html', {'items_carrito': items_carrito, 'total': total})
