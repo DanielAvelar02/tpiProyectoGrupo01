@@ -506,9 +506,10 @@ def pagar(request):
 def seguimiento_pedido(request):
     return render(request, 'cliente/seguimiento_pedido.html')
 
-#Repartidor - Pedidos
+# Repartidor - Pedidos
 def pedidos_view(request):
-    pedidos = Pedido.objects.all()
+    pedidos = Pedido.objects.all().select_related('cliente')  # Seleccionar cliente para evitar consultas adicionales
+
     return render(request, 'repartidor/pedidos.html', {'pedidos': pedidos})
 
 def historial_pedidos(request):
