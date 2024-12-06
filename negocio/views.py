@@ -713,11 +713,6 @@ def ver_carrito(request):
     })
 
 @login_required
-def detalle_pedido(request, pedido_id):
-    pedido = get_object_or_404(Pedido, id=pedido_id, cliente=request.user)
-    return render(request, 'cliente/pedido.html', {'pedido': pedido})
-
-@login_required
 @user_passes_test(es_cliente)
 def listar_pedidos(request):
     pedidos = Pedido.objects.filter(cliente=request.user).order_by('-fecha_pedido')
