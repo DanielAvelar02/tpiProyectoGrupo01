@@ -602,7 +602,6 @@ def pagar(request):
     if request.method == 'POST':
         direccion = request.POST.get('direccion')
         carrito = request.session.get('carrito', {})
-        productos = Producto.objects.filter(id__in=carrito.keys())
         
         if not direccion:
             messages.error(request, 'Por favor, ingrese una dirección.')
@@ -612,7 +611,7 @@ def pagar(request):
         pedido = Pedido.objects.create(
             cliente=request.user,
             direccion_entrega=direccion,
-            total=sum(producto.precio * cantidad for producto, cantidad in carrito.items())
+            total=sum(Producto.objects.get(id=producto_id).precio * cantidad for producto_id, cantidad in carrito.items())
         )
 
         # Crear los detalles del pedido
@@ -622,7 +621,7 @@ def pagar(request):
                 pedido=pedido,
                 producto=producto,
                 cantidad=cantidad,
-                subtotal=producto.precio * cantidad
+                precio_unitario=producto.precio
             )
 
         # Limpiar el carrito
