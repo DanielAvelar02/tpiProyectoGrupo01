@@ -3,24 +3,24 @@
   Productos
 {% endblock %}
 {% block content %}
-  <h1>Catálogo de Productos</h1>
-  <a class="btn btn-custom" href="{% url 'crear_producto' %}">Crear nuevo producto</a>
+  <div class="container my-5">
+    <h1 class="mb-4">Catálogo de Productos</h1>
+    <a class="btn btn-custom mb-3" href="{% url 'crear_producto' %}">Crear nuevo producto</a>
 
-  <h2>Lista de Productos</h2>
-  <div class="table-responsive-sm">
-    <table class="table text-center" style="color: var(--color-secundario);">
-      <thead>
-        <tr>
-          <th>Imagen</th>
-          <th>Nombre</th>
-          <th>Precio</th>
-          <th>Cantidad Disponible</th>
-          <th>Activo</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for producto in productos %}
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered text-center">
+        <thead class="thead-dark">
+          <tr>
+            <th>Imagen</th>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Cantidad Disponible</th>
+            <th>Activo</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for producto in productos %}
           <tr>
             <td>
               {% if producto.imagen %}
@@ -32,39 +32,34 @@
             <td>{{ producto.nombre }}</td>
             <td>{{ producto.precio }}</td>
             <td>{{ producto.cantidad_disponible }}</td>
-            <!-- Estado -->
-            {% if producto.activo %}
-              <td>
+            <td>
+              {% if producto.activo %}
                 <form action="{% url 'cambiar_estado_producto' producto.id %}" method="post" style="display: inline;">
                   {% csrf_token %}
                   <button type="submit" class="btn btn-danger">Desactivar</button>
                 </form>
-              </td>
-            {% else %}
-              <td>
+              {% else %}
                 <form action="{% url 'cambiar_estado_producto' producto.id %}" method="post" style="display: inline;">
                   {% csrf_token %}
                   <button type="submit" class="btn btn-success">Activar</button>
                 </form>
-              </td>
-            {% endif %}
-            <!-- Acciones -->
+              {% endif %}
+            </td>
             <td>
               <form action="{% url 'editar_producto' producto.id %}" style="display: inline;">
                 {% csrf_token %}
-                <button type="submit"  class="btn btn-info">Editar</button>
+                <button type="submit" class="btn btn-info">Editar</button>
               </form>
-  
               <form action="{% url 'eliminar_producto' producto.id %}" method="post" style="display: inline;">
                 {% csrf_token %}
-                <button type="submit"  class="btn btn-danger">Eliminar</button>
+                <button type="submit" class="btn btn-danger">Eliminar</button>
               </form>
             </td>
           </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <a href="{% url 'inicio' %}" class="btn btn-custom mt-3">Volver al inicio</a>
   </div>
-  <br />
-  <a href="{% url 'inicio' %}" class="btn btn-custom">Volver al inicio</a>
 {% endblock %}
