@@ -627,12 +627,9 @@ def pagar(request):
         # Limpiar el carrito
         request.session['carrito'] = {}
         messages.success(request, 'Pedido realizado con éxito.')
-        return redirect('seguimiento_pedido')
+        return redirect('detalle_pedido', pedido_id=pedido.id)
 
     return render(request, 'cliente/pago.html')
-
-def seguimiento_pedido(request):
-    return render(request, 'cliente/seguimiento_pedido.html')
 
 # Repartidor - Pedidos
 def pedidos_view(request):
@@ -694,7 +691,7 @@ def asignacion_pedidos(request):
 @user_passes_test(es_cliente)
 def ver_carrito(request):
     carrito = request.session.get('carrito', {})
-    productos = Producto.objects.filter(id__in=carrito.keys())
+    productos = Producto.objects.filter(id__in(carrito.keys()))
     items_carrito = []
     carrito_vacio = True  # Variable para controlar si hay items
 
@@ -714,3 +711,15 @@ def ver_carrito(request):
         'total': total,
         'carrito_vacio': carrito_vacio
     })
+
+@login_required
+def detalle_pedido(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id, cliente=request.user)
+    return render(request, 'cliente/pedido.html', {'pedido': pedido})
+
+@login_required
+@user_passes_test(es_cliente)
+def listar_pedidos(request):
+    pedidos = Pedido.objects.filter(cliente=request.user).order_by('-fecha_pedido')
+    return render(request, 'cliente/listar_pedidos.html', {'pedidos': pedidos})
+
