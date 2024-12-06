@@ -534,6 +534,7 @@ def agregar_al_carrito(request, producto_id):
     if request.method == 'POST':
         hoy = date.today()
         menu_hoy = MenuDelDia.objects.filter(fecha=hoy).first()
+        print(menu_hoy) 
         producto = get_object_or_404(Producto, id=producto_id, activo=True)
         print(producto)
         menu_producto = get_object_or_404(MenuProducto, menu=menu_hoy, producto=producto)
