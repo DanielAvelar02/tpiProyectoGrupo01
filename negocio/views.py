@@ -572,15 +572,24 @@ def cancelar_compra(request):
     messages.success(request, 'Compra cancelada y carrito vaciado.')
     return redirect('menu_del_dia')
 
+from django.shortcuts import render, get_object_or_404
+from .models import Producto
+
 def ordenar_platillo(request, platillo_id):
-    producto = get_object_or_404(Producto, id=platillo_id)
-    platillo = {
-        'nombre': producto.nombre,
-        'precio': producto.precio,
-        'imagen': producto.imagen.url,
-        'cantidad_disponible': producto.cantidad_disponible,
-    }
-    return render(request, 'cliente/ordenar_platillo.html', {'platillo': platillo})
+    platillo = get_object_or_404(Producto, id=platillo_id)
+    hoy = date.today()
+    menu_hoy = MenuDelDia.objects.filter(fecha=hoy).first()
+    cantidad_disponible = 0
+
+    if menu_hoy:
+        menu_producto = MenuProducto.objects.filter(menu=menu_hoy, producto=platillo).first()
+        if menu_producto:
+            cantidad_disponible = menu_producto.cantidad_disponible
+
+    return render(request, 'cliente/ordenar_platillo.html', {
+        'platillo': platillo,
+        'cantidad_disponible': cantidad_disponible
+    })
 
 def pagar(request):
     return render(request, 'cliente/pago.html')
