@@ -691,7 +691,7 @@ def asignacion_pedidos(request):
 @user_passes_test(es_cliente)
 def ver_carrito(request):
     carrito = request.session.get('carrito', {})
-    productos = Producto.objects.filter(id__in(carrito.keys()))
+    productos = Producto.objects.filter(id__in=carrito.keys())
     items_carrito = []
     carrito_vacio = True  # Variable para controlar si hay items
 
