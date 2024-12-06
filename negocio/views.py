@@ -627,7 +627,7 @@ def pagar(request):
         # Limpiar el carrito
         request.session['carrito'] = {}
         messages.success(request, 'Pedido realizado con éxito.')
-        return redirect('detalle_pedido', pedido_id=pedido.id)
+        return redirect('listar_pedidos')
 
     return render(request, 'cliente/pago.html')
 
