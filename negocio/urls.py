@@ -1,6 +1,7 @@
 # negocio/urls.py
 from django.urls import path
 from . import views
+from .views import agregar_al_carrito, ver_carrito, cancelar_compra
 
 urlpatterns = [
     #-------------------------------
@@ -48,6 +49,7 @@ urlpatterns = [
     path('ordenar-platillo/<int:platillo_id>/', views.ordenar_platillo, name='ordenar_platillo'),
     path('pagar/', views.pagar, name='pagar'),
     path('seguimiento-pedido/', views.seguimiento_pedido, name='seguimiento_pedido'),
+    path('cancelar-compra/', cancelar_compra, name='cancelar_compra'),
 
     #Moises Modificaciones
     path('repartidor/pedidos/', views.pedidos_view, name='pedidos'),
@@ -70,5 +72,7 @@ urlpatterns = [
     #KIKE Modificaciones FIN
     #-------------------------------
 
+    path('agregar-al-carrito/<int:producto_id>/', agregar_al_carrito, name='agregar_al_carrito'),
+    path('ver-carrito/', ver_carrito, name='ver_carrito'),
     
 ]

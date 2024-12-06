@@ -253,14 +253,24 @@ def crear_producto(request):
         nombre = request.POST.get('nombre')
         precio = request.POST.get('precio')
         cantidad_disponible = request.POST.get('cantidad')
+        imagen = request.FILES.get('imagen')
         negocio = Negocio.objects.first()
-        if nombre and precio and cantidad_disponible is not None:
+
+        # Validar que se suba una imagen
+        if not imagen:
+            return render(request, 'producto/crear_producto.html', {'accion': accion, 'action': action, 'error': 'Debe subir una imagen del producto'})
+
+        # Validar que no exista un producto con el mismo nombre
+        if Producto.objects.filter(nombre=nombre).exists():
+            return render(request, 'producto/crear_producto.html', {'accion': accion, 'action': action, 'error': 'Ya existe un producto con este nombre'})
+
+        if nombre is not None and precio is not None and cantidad_disponible is not None:
             try:
                 precio = float(precio)
                 cantidad_disponible = int(cantidad_disponible)
             except ValueError:
                 return render(request, 'producto/crear_producto.html', {'accion': accion, 'action': action,'error': 'El precio debe ser un número decimal y la cantidad debe ser un número entero'})
-            producto = Producto(nombre=nombre, precio=precio, cantidad_disponible=cantidad_disponible, negocio=negocio)
+            producto = Producto(nombre=nombre, precio=precio, cantidad_disponible=cantidad_disponible, negocio=negocio, imagen=imagen)
             producto.save()
             return redirect('listar_productos')
         else:
@@ -274,6 +284,11 @@ def cambiar_estado_producto(request, producto_id):
     producto.save()
     return redirect('listar_productos')
 
+import os
+from django.conf import settings
+
+@login_required
+@user_passes_test(es_encargado_menu)
 def editar_producto(request, producto_id):
     accion = 'Guardar cambios'
     action = '/negocio/editar-producto/' + str(producto_id)
@@ -282,6 +297,12 @@ def editar_producto(request, producto_id):
         nombre = request.POST.get('nombre')
         precio = request.POST.get('precio')
         cantidad_disponible = request.POST.get('cantidad')
+        imagen = request.FILES.get('imagen')
+        
+        # Validar que no exista un producto con el mismo nombre (excepto el actual)
+        if Producto.objects.filter(nombre=nombre).exclude(id=producto_id).exists():
+            return render(request, 'producto/crear_producto.html', {'producto': producto, 'accion': accion, 'action': action, 'error': 'Ya existe un producto con este nombre'})
+
         if nombre and precio and cantidad_disponible is not None:
             try:
                 precio = float(precio)
@@ -291,6 +312,12 @@ def editar_producto(request, producto_id):
             producto.nombre = nombre
             producto.precio = precio
             producto.cantidad_disponible = cantidad_disponible
+            if imagen:
+                # Eliminar la imagen anterior si existe
+                if producto.imagen:
+                    if os.path.isfile(producto.imagen.path):
+                        os.remove(producto.imagen.path)
+                producto.imagen = imagen
             producto.save()
             return redirect('listar_productos')
         else:
@@ -298,8 +325,13 @@ def editar_producto(request, producto_id):
     else:
         return render(request, 'producto/crear_producto.html', {'producto': producto, 'accion': accion, 'action': action})
 
+@login_required
+@user_passes_test(es_encargado_menu)
 def eliminar_producto(request, producto_id):
     producto = get_object_or_404(Producto, id=producto_id)
+    if producto.imagen:
+        if os.path.isfile(producto.imagen.path):
+            os.remove(producto.imagen.path)
     producto.delete()
     return redirect('listar_productos')
 
@@ -478,31 +510,90 @@ def eliminar_menu(request, menu_id):
 
 from django.shortcuts import render
 
+@login_required
+@user_passes_test(es_cliente)
 def menu_del_dia(request):
-    # Aquí puedes obtener los platos del modelo si estuvieran definidos
-    platos = [
-        {"nombre": "Plato 1", "imagen": "https://via.placeholder.com/100"},
-        {"nombre": "Plato 2", "imagen": "https://via.placeholder.com/100"},
-        {"nombre": "Plato 3", "imagen": "https://via.placeholder.com/100"},
-        {"nombre": "Plato 4", "imagen": "https://via.placeholder.com/100"},
-        {"nombre": "Plato 5", "imagen": "https://via.placeholder.com/100"},
-        {"nombre": "Plato 6", "imagen": "https://via.placeholder.com/100"},
-    ]
-    return render(request, 'cliente/menu_del_dia.html', {'platos': platos})
+    hoy = date.today()
+    menu_hoy = MenuDelDia.objects.filter(fecha=hoy).first()
+    productos_info = []
+
+    if menu_hoy:
+        for producto in menu_hoy.productos.all():
+            menu_producto = MenuProducto.objects.filter(menu=menu_hoy, producto=producto).first()
+            if menu_producto:
+                productos_info.append({
+                    'producto': producto,
+                    'cantidad_disponible': menu_producto.cantidad_disponible
+                })
+
+    return render(request, 'cliente/menu_del_dia.html', {'productos_info': productos_info})
+
+@login_required
+@user_passes_test(es_cliente)
+def agregar_al_carrito(request, producto_id):
+    if request.method == 'POST':
+        hoy = date.today()
+        menu_hoy = MenuDelDia.objects.filter(fecha=hoy).first()
+        producto = get_object_or_404(Producto, id=producto_id, activo=True)
+        print(producto)
+        menu_producto = get_object_or_404(MenuProducto, menu=menu_hoy, producto=producto)
+        cantidad = int(request.POST.get('cantidad', 1))
+        if cantidad > menu_producto.cantidad_disponible:
+            messages.error(request, f'La cantidad de "{producto.nombre}" excede la disponible.')
+            return redirect('menu_del_dia')
+
+        carrito = request.session.get('carrito', {})
+        if str(producto_id) in carrito:
+            carrito[str(producto_id)] += cantidad
+        else:
+            carrito[str(producto_id)] = cantidad
+        # Decrease the available quantity in MenuProducto and Producto
+        menu_producto.cantidad_disponible -= cantidad
+        menu_producto.save()
+        producto.cantidad_disponible -= cantidad
+        producto.save()
+        request.session['carrito'] = carrito
+        messages.success(request, f'Agregado {cantidad} de "{producto.nombre}" al carrito.')
+        return redirect('menu_del_dia')
+
+
+@login_required
+@user_passes_test(es_cliente)
+def cancelar_compra(request):
+    hoy = date.today()
+    menu_hoy = MenuDelDia.objects.filter(fecha=hoy).first()
+    carrito = request.session.get('carrito', {})
+
+    for producto_id, cantidad in carrito.items():
+        producto = get_object_or_404(Producto, id=producto_id)
+        menu_producto = get_object_or_404(MenuProducto, menu=menu_hoy, producto=producto)
+        menu_producto.cantidad_disponible += cantidad
+        menu_producto.save()
+        producto.cantidad_disponible += cantidad
+        producto.save()
+
+    request.session['carrito'] = {}
+    messages.success(request, 'Compra cancelada y carrito vaciado.')
+    return redirect('menu_del_dia')
+
+from django.shortcuts import render, get_object_or_404
+from .models import Producto
 
 def ordenar_platillo(request, platillo_id):
-    # Simulación de datos del platillo
-    platillo = {
-        'nombre': 'Hamburguesa Especial',
-        'precio': 7.99,
-        'imagen': 'https://via.placeholder.com/300',
-        'incluye': [
-            {'nombre': 'Papas', 'imagen': 'https://via.placeholder.com/50'},
-            {'nombre': 'Soda', 'imagen': 'https://via.placeholder.com/50'},
-            {'nombre': 'Hamburguesa', 'imagen': 'https://via.placeholder.com/50'}
-        ]
-    }
-    return render(request, 'cliente/ordenar_platillo.html', {'platillo': platillo})
+    platillo = get_object_or_404(Producto, id=platillo_id)
+    hoy = date.today()
+    menu_hoy = MenuDelDia.objects.filter(fecha=hoy).first()
+    cantidad_disponible = 0
+
+    if menu_hoy:
+        menu_producto = MenuProducto.objects.filter(menu=menu_hoy, producto=platillo).first()
+        if menu_producto:
+            cantidad_disponible = menu_producto.cantidad_disponible
+
+    return render(request, 'cliente/ordenar_platillo.html', {
+        'platillo': platillo,
+        'cantidad_disponible': cantidad_disponible
+    })
 
 def pagar(request):
     return render(request, 'cliente/pago.html')
@@ -566,3 +657,19 @@ def asignacion_pedidos(request):
 #-------------------------------
 #KIKE Modificaciones FIN
 #-------------------------------
+@login_required
+@user_passes_test(es_cliente)
+def ver_carrito(request):
+    carrito = request.session.get('carrito', {})
+    productos = Producto.objects.filter(id__in=carrito.keys())
+    items_carrito = []
+
+    for producto in productos:
+        items_carrito.append({
+            'producto': producto,
+            'cantidad': carrito[str(producto.id)],
+            'subtotal': producto.precio * carrito[str(producto.id)]
+        })
+
+    total = sum(item['subtotal'] for item in items_carrito)
+    return render(request, 'cliente/ver_carrito.html', {'items_carrito': items_carrito, 'total': total})

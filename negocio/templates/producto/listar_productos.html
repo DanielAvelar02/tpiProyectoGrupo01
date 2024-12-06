@@ -11,6 +11,7 @@
     <table class="table text-center" style="color: var(--color-secundario);">
       <thead>
         <tr>
+          <th>Imagen</th>
           <th>Nombre</th>
           <th>Precio</th>
           <th>Cantidad Disponible</th>
@@ -21,6 +22,13 @@
       <tbody>
         {% for producto in productos %}
           <tr>
+            <td>
+              {% if producto.imagen %}
+                <img src="{{ producto.imagen.url }}" alt="Imagen de {{ producto.nombre }}" class="img-fluid" style="max-width: 100px;">
+              {% else %}
+                No disponible
+              {% endif %}
+            </td>
             <td>{{ producto.nombre }}</td>
             <td>{{ producto.precio }}</td>
             <td>{{ producto.cantidad_disponible }}</td>
@@ -49,7 +57,7 @@
   
               <form action="{% url 'eliminar_producto' producto.id %}" method="post" style="display: inline;">
                 {% csrf_token %}
-                <button type="submit"  class="btn btn-info">Eliminar</button>
+                <button type="submit"  class="btn btn-danger">Eliminar</button>
               </form>
             </td>
           </tr>

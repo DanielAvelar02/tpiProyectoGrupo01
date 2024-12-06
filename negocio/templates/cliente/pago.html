@@ -10,6 +10,8 @@
     <div class="row shadow rounded p-4 w-100 bg-white" style="max-width: 1200px;">
       <!-- Mapa -->
       <div class="col-md-6 text-center">
+        <input type="text" id="direccion" class="form-control mb-3" placeholder="Ingresa tu dirección">
+        <button id="buscarDireccion" class="btn btn-primary mb-3">Buscar Dirección</button>
         <div id="map" class="border rounded mb-3" style="width: 100%; height: 300px;"></div>
         <p>Selecciona tu ubicación</p>
       </div>
@@ -30,21 +32,6 @@
           <div class="mb-3">
             <label for="telefono" class="form-label">Teléfono:</label>
             <input type="tel" id="telefono" name="telefono" class="form-control" required>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Método de pago:</label>
-            <div class="form-check">
-              <input type="radio" id="efectivo" name="metodo" value="efectivo" class="form-check-input" required>
-              <label for="efectivo" class="form-check-label">Efectivo</label>
-            </div>
-            <div class="form-check">
-              <input type="radio" id="tarjeta" name="metodo" value="tarjeta" class="form-check-input">
-              <label for="tarjeta" class="form-check-label">
-                Tarjeta
-                <button type="button" class="btn btn-outline-secondary btn-sm ms-2">Añadir info pago</button>
-              </label>
-            </div>
           </div>
 
           <button type="submit" class="btn btn-primary w-100 mt-3">Pagar</button>
@@ -74,6 +61,39 @@
     marker.on('dragend', function (e) {
         const position = marker.getLatLng();
         alert(`Ubicación seleccionada:\nLat: ${position.lat}\nLng: ${position.lng}`);
+    });
+
+    // Obtener la ubicación actual del usuario
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const latLng = [position.coords.latitude, position.coords.longitude];
+            map.setView(latLng, 13);
+            marker.setLatLng(latLng);
+        }, function() {
+            alert('No se pudo obtener la ubicación actual.');
+        });
+    } else {
+        alert('La geolocalización no es soportada por este navegador.');
+    }
+
+    // Buscar dirección y actualizar el mapa
+    document.getElementById('buscarDireccion').addEventListener('click', function() {
+        const direccion = document.getElementById('direccion').value;
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${direccion}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    const latLng = [data[0].lat, data[0].lon];
+                    map.setView(latLng, 13);
+                    marker.setLatLng(latLng);
+                } else {
+                    alert('No se pudo encontrar la dirección.');
+                }
+            })
+            .catch(error => {
+                console.error('Error al buscar la dirección:', error);
+                alert('Ocurrió un error al buscar la dirección.');
+            });
     });
 
     // Redirigir a la página de seguimiento del pedido al enviar el formulario

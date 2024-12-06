@@ -1,5 +1,5 @@
 <!-- Template de Creación de menú -->
-{% extends 'base_generic.html' %}
+{% extends 'base_menu.html' %}
 
 {% block title %}
   Crear Menú
@@ -22,4 +22,49 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block menu_title %}
+  Menú del Día
+{% endblock %}
+
+{% block menu_content %}
+  <h1 class="text-center my-4">Menú del Día</h1>
+  <main class="container shadow-lg p-4 rounded bg-white my-5">
+    <section class="row gy-4 justify-content-center">
+      {% if productos %}
+        {% for producto in productos %}
+          <div class="col-md-4 d-flex justify-content-center my-3">
+            <div class="card text-center shadow-sm p-3 border-0" style="width: 18rem; transition: transform 0.2s, box-shadow 0.2s;">
+              <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="card-img-top img-fluid" style="width: 150px; height: 150px; object-fit: cover; margin: 0 auto;">
+              <div class="card-body">
+                <h5 class="card-title">{{ producto.nombre }}</h5>
+                <p class="card-text">Precio: ${{ producto.precio }}</p>
+                <p class="card-text">Cantidad Disponible: {{ producto.cantidad_disponible }}</p>
+                <a class="btn btn-primary mt-3 w-100" href="{% url 'ordenar_platillo' producto.id %}">Ordenar</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="col-12 text-center">
+          <p class="text-danger">No hay menú disponible para el día de hoy.</p>
+        </div>
+      {% endif %}
+    </section>
+  </main>
+
+  <script>
+    // Agregar efecto de hover para las tarjetas
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        card.style.transform = 'scale(1.1)';
+        card.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'scale(1)';
+        card.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+      });
+    });
+  </script>
 {% endblock %}

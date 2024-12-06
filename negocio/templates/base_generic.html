@@ -10,6 +10,7 @@
     </title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
       /* Aplica los colores del negocio a la plantilla */
       :root {
@@ -96,10 +97,7 @@
                   Cliente
                 </a>
                 <div class="dropdown-menu" aria-labelledby="clienteDropdown">
-                  <a class="dropdown-item" href="{% url 'listar_menus' %}">Editar Menú del día</a>
                   <a class="dropdown-item" href="{% url 'menu_del_dia' %}">Menú del Día</a>
-                  <a class="dropdown-item" href="{% url 'ordenar_platillo' 1 %}">Ordenar Platillo</a>
-                  <a class="dropdown-item" href="{% url 'pagar' %}">Pago</a>
                   <a class="dropdown-item" href="{% url 'seguimiento_pedido' %}">Seguimiento de Pedido</a>
                   <a class="dropdown-item" href="#">Pedidos</a>
                   <a class="dropdown-item" href="#">Reclamos</a>
