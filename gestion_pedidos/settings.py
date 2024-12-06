@@ -13,13 +13,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-es+9xi+=h8$1o-l2e96a6plub_ko*9zqkiaox=#0hg0i02ctox'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = 'RENDER' not in os.environ
 
 #Cuando la aplicacion este local, descomentar la siguiente linea
-#ALLOWED_HOSTS = []
+ALLOWED_HOSTS = []
+
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 #Cuando la aplicacion este en produccion, descomentar la siguiente linea
-ALLOWED_HOSTS = ['tpiproyectogrupo01.onrender.com']
+#ALLOWED_HOSTS = ['tpiproyectogrupo01.onrender.com']
 
 # settings.py
 LOGIN_URL = 'login'  # Asegura que se redirija a la URL del login personalizado
@@ -56,7 +60,7 @@ ROOT_URLCONF = 'gestion_pedidos.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # Asegúrate de que esta ruta exista
+        'DIRS': [os.path.join(BASE_DIR, 'negocio/templates')],  # Asegúrate de que esta ruta exista
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -134,7 +138,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'es'
+LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
@@ -146,7 +150,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
