@@ -20,13 +20,6 @@
               <img src="{{ item.producto.imagen.url }}" alt="{{ item.producto.nombre }}" class="card-img-top img-fluid" style="width: 150px; height: 150px; object-fit: cover; margin: 0 auto;">
               <div class="card-body">
                 <h5 class="card-title">{{ item.producto.nombre }}</h5>
-                <p class="card-text">Precio: ${{ item.producto.precio }}</p>
-                <p class="card-text">Cantidad Disponible: {{ item.cantidad_disponible }}</p>
-                <form method="POST" action="{% url 'agregar_al_carrito' item.producto.id %}">
-                  {% csrf_token %}
-                  <input type="number" name="cantidad" min="1" max="{{ item.cantidad_disponible }}" value="1" class="form-control mb-2">
-                  <button type="submit" class="btn btn-primary w-100">Agregar al Carrito</button>
-                </form>
                 <a class="btn btn-primary mt-3 w-100" href="{% url 'ordenar_platillo' item.producto.id %}">Ver Detalles</a>
               </div>
             </div>

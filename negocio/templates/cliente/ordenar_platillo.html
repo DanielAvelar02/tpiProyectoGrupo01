@@ -14,7 +14,12 @@
         <p class="mt-4 fs-5 text-end">
           <strong>{{ platillo.nombre }}</strong></p>
         <p class="mt-4 fs-5 text-end"><strong>Total: ${{ platillo.precio }}</strong></p>
-        <p class="mt-4 fs-5 text-end"><strong>Cantidad Disponible: {{ cantidad_disponible }}</strong></p>      </div>
+        {% if cantidad_disponible != 0 %}
+        <p class="mt-4 fs-5 text-end"><strong>Cantidad Disponible: {{ cantidad_disponible }}</strong></p>
+        {% else %}
+        <p class="mt-4 fs-5 text-end text-danger"><strong>Producto Agotado</strong></p>
+        {% endif %}
+      </div>
       <!-- Imagen y botón de pago -->
       <div class="col-md-6 d-flex flex-column align-items-center">
         <div class="mb-4">
@@ -22,7 +27,7 @@
         </div>
         <form action="{% url 'agregar_al_carrito' platillo.id %}" method="POST" class="d-inline-block">
           {% csrf_token %}
-          <input type="number" name="cantidad" min="1" max="{{ platillo.cantidad_disponible }}" value="1" class="form-control mb-2">
+          <input type="number" name="cantidad" min="1" max="{{ cantidad_disponible }}" value="1" class="form-control mb-2" required>
           <button type="submit" class="btn btn-primary mb-2">Agregar al Carrito</button>
         </form>
         <div class="d-flex justify-content-center">

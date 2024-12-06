@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Negocio, Producto, MenuDelDia, MenuProducto, Pedido #se importan los modelos
+from .models import DetallePedido, Negocio, Producto, MenuDelDia, MenuProducto, Pedido #se importan los modelos
 from .forms import EditarUsuarioForm, NegocioForm, CrearUsuarioForm, RegistrarClienteForm, CrearMenuForm #se importan los formularios
 from django.contrib.auth.forms import AuthenticationForm 
 from django.contrib.auth import authenticate, login, logout
@@ -596,7 +596,40 @@ def ordenar_platillo(request, platillo_id):
         'cantidad_disponible': cantidad_disponible
     })
 
+@login_required
+@user_passes_test(es_cliente)
 def pagar(request):
+    if request.method == 'POST':
+        direccion = request.POST.get('direccion')
+        carrito = request.session.get('carrito', {})
+        productos = Producto.objects.filter(id__in=carrito.keys())
+        
+        if not direccion:
+            messages.error(request, 'Por favor, ingrese una dirección.')
+            return redirect('pago')
+
+        # Crear el pedido
+        pedido = Pedido.objects.create(
+            cliente=request.user,
+            direccion_entrega=direccion,
+            total=sum(producto.precio * cantidad for producto, cantidad in carrito.items())
+        )
+
+        # Crear los detalles del pedido
+        for producto_id, cantidad in carrito.items():
+            producto = get_object_or_404(Producto, id=producto_id)
+            DetallePedido.objects.create(
+                pedido=pedido,
+                producto=producto,
+                cantidad=cantidad,
+                subtotal=producto.precio * cantidad
+            )
+
+        # Limpiar el carrito
+        request.session['carrito'] = {}
+        messages.success(request, 'Pedido realizado con éxito.')
+        return redirect('seguimiento_pedido')
+
     return render(request, 'cliente/pago.html')
 
 def seguimiento_pedido(request):
