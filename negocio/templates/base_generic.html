@@ -49,6 +49,9 @@
             <img src="{{ negocio.logo.url }}" alt="Logo de {{ negocio.nombre }}" class="business-logo" />
           {% endif %}
           <span>{{ negocio.nombre }}</span>
+        {% else %}
+        <a href=""></a>
+          <span>Aun no registras tu negocio!</span>
         {% endif %}
       </a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
