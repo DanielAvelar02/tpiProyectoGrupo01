@@ -30,7 +30,7 @@
               {% endif %}
             </td>
             <td>{{ producto.nombre }}</td>
-            <td>{{ producto.precio }}</td>
+            <td class="precio">{{ producto.precio }}</td>
             <td>{{ producto.cantidad_disponible }}</td>
             <td>
               {% if producto.activo %}
@@ -62,4 +62,18 @@
     </div>
     <a href="{% url 'inicio' %}" class="btn btn-custom mt-3">Volver al inicio</a>
   </div>
+  <script>
+    let precios = document.querySelectorAll('.precio');
+    function formatNumber() {
+      precios.forEach(function(precio) {
+        let formattedNumber = parseFloat(precio.innerText.replace(',', '.')).toFixed(2);
+        if (isNaN(formattedNumber)) {
+          formattedNumber = '';
+        }
+        precio.textContent = formattedNumber;
+      });
+    }
+    formatNumber();
+  </script>
 {% endblock %}
+
