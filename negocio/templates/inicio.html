@@ -12,6 +12,18 @@
       {% else %}
         <h1>Bienvenido al inicio del sitio</h1>
       {% endif %}
+
+      {% if request.user.is_authenticated and negocio %}
+        {% if negocio.logo %}
+          <img src="{{ negocio.logo.url }}" alt="Logo de {{ negocio.nombre }}" class="business-logo" />
+        {% endif %}
+        <span>{{ negocio.nombre }}</span>
+      {% else %}
+        <a href=""></a>
+        <p>
+          Puedes registrar tu negocio en <a href="{% url 'configurar_negocio' %}">Configuración del negocio</a>
+        </p>
+      {% endif %}
     </div>
   </body>
 {% endblock %}
