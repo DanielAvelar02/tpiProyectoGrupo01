@@ -32,9 +32,23 @@
         </div>
         <div class="text-center mt-4">
           <a href="{% url 'menu_del_dia' %}" class="btn btn-secondary">Seguir Comprando</a>
-          <a href="{% url 'pagar' %}" class="btn btn-success">Pedir</a>
-          <a href="{% url 'cancelar_compra' %}" class="btn btn-danger">Cancelar Compra</a>
+          <a href="{% url 'pagar' %}" class="btn btn-success {% if carrito_vacio %}disabled{% endif %}" 
+             {% if carrito_vacio %}
+             onclick="return false;"
+             title="Agregue productos al carrito primero"
+             {% endif %}>
+             Pedir
+          </a>
+          <a href="{% url 'cancelar_compra' %}" class="btn btn-danger {% if carrito_vacio %}disabled{% endif %}">
+              Cancelar Compra
+          </a>
         </div>
+
+        {% if carrito_vacio %}
+        <div class="alert alert-info mt-3 text-center">
+            El carrito está vacío. Agregue productos para realizar un pedido.
+        </div>
+        {% endif %}
       </div>
     </div>
   </main>

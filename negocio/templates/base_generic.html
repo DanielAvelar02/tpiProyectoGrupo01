@@ -8,9 +8,9 @@
         Bienvenido
       {% endblock %}
     </title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Otros enlaces y meta etiquetas -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
       /* Aplica los colores del negocio a la plantilla */
       :root {
@@ -99,8 +99,7 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="clienteDropdown">
                   <a class="dropdown-item" href="{% url 'menu_del_dia' %}">Menú del Día</a>
-                  <a class="dropdown-item" href="{% url 'seguimiento_pedido' %}">Seguimiento de Pedido</a>
-                  <a class="dropdown-item" href="#">Pedidos</a>
+                  <a class="dropdown-item" href="{% url 'listar_pedidos' %}">Mis Pedidos</a>
                   <a class="dropdown-item" href="{% url 'realizar_reclamo' %}">Reclamos</a>
                 </div>
               </li>
@@ -108,10 +107,10 @@
             {% if es_repartidor %}
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="repartidorDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Encargado de Registro
+                  Repartidor
                 </a>
                 <div class="dropdown-menu" aria-labelledby="repartidorDropdown">
-                  <a class="dropdown-item" href="{% url 'pedidos' %}">Registro de Pedidos</a>
+                  <a class="dropdown-item" href="{% url 'pedidos' %}">Asignacion de Pedidos</a>
                   <a class="dropdown-item" href="{% url 'historial_pedidos' %}">Historial pedidos</a>
                 </div>
               </li>
@@ -143,7 +142,7 @@
 
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </body>
 </html>

@@ -48,7 +48,6 @@ urlpatterns = [
     path('menu/', views.menu_del_dia, name='menu_del_dia'),
     path('ordenar-platillo/<int:platillo_id>/', views.ordenar_platillo, name='ordenar_platillo'),
     path('pagar/', views.pagar, name='pagar'),
-    path('seguimiento-pedido/', views.seguimiento_pedido, name='seguimiento_pedido'),
     path('cancelar-compra/', cancelar_compra, name='cancelar_compra'),
 
     #Moises Modificaciones
@@ -77,4 +76,5 @@ urlpatterns = [
     path('realizar-reclamo/', views.realizar_reclamo, name='realizar_reclamo'),
     path('ver-reclamos/', views.ver_reclamos, name='ver_reclamos'),
     
+    path('pedidos/', views.listar_pedidos, name='listar_pedidos'),
 ]
