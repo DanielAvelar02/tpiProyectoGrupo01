@@ -1,0 +1,53 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}
+  Ver Reclamos
+{% endblock %}
+
+{% block content %}
+  <div class="container mt-5">
+    <h1 class="mb-4">Reclamos</h1>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Fecha del Reclamo</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for reclamo in reclamos %}
+          <tr>
+            <td>{{ reclamo.cliente.username }}</td>
+            <td>{{ reclamo.fecha_reclamo }}</td>
+            <td>
+              <button class="btn btn-info" data-toggle="modal" data-target="#detalleModal{{ reclamo.id }}">Ver Detalle</button>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modales para ver detalles de los reclamos -->
+  {% for reclamo in reclamos %}
+    <div class="modal fade" id="detalleModal{{ reclamo.id }}" tabindex="-1" role="dialog" aria-labelledby="detalleModalLabel{{ reclamo.id }}" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="detalleModalLabel{{ reclamo.id }}">Detalle del Reclamo</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>{{ reclamo.texto }}</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+{% endblock %}

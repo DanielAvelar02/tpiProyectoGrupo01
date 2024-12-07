@@ -66,6 +66,7 @@
                   <a class="dropdown-item" href="{% url 'listar_usuarios' %}">Gestion usuarios</a>
                   <a class="dropdown-item" href="{% url 'configurar_negocio' %}">Configuracion del negocio</a>
                   <a class="dropdown-item" href="{% url 'lealtad' %}">Programa de lealtad</a>
+                  <a class="dropdown-item" href="{% url 'ver_reclamos' %}">Ver Reclamos</a>
                 </div>
               </li>
             {% endif %}
@@ -100,7 +101,7 @@
                   <a class="dropdown-item" href="{% url 'menu_del_dia' %}">Menú del Día</a>
                   <a class="dropdown-item" href="{% url 'seguimiento_pedido' %}">Seguimiento de Pedido</a>
                   <a class="dropdown-item" href="#">Pedidos</a>
-                  <a class="dropdown-item" href="#">Reclamos</a>
+                  <a class="dropdown-item" href="{% url 'realizar_reclamo' %}">Reclamos</a>
                 </div>
               </li>
             {% endif %}

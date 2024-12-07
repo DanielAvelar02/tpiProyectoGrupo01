@@ -1,5 +1,5 @@
 from django import forms
-from .models import Negocio, Producto, MenuDelDia
+from .models import Negocio, Producto, MenuDelDia, Reclamo
 from django.contrib.auth.models import User, Group
 from datetime import datetime, date
 
@@ -162,3 +162,14 @@ class CrearMenuForm(forms.Form):
         cleaned_data['productos_con_cantidad'] = productos_con_cantidad
 
         return cleaned_data
+
+class ReclamoForm(forms.ModelForm):
+    class Meta:
+        model = Reclamo
+        fields = ['texto']
+        widgets = {
+            'texto': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
+        }
+        labels = {
+            'texto': 'Descripción del Reclamo',
+        }
