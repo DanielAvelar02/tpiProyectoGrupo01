@@ -97,3 +97,11 @@ class Fidelizacion(models.Model):
     tipo = models.CharField(max_length=50)
     cantidad = models.IntegerField()
     vencimiento = models.DateField()
+
+class Reclamo(models.Model):
+    cliente = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'groups__name': 'Cliente'})
+    fecha_reclamo = models.DateTimeField(auto_now_add=True)
+    texto = models.TextField()
+
+    def __str__(self):
+        return f'Reclamo de {self.cliente.username} el {self.fecha_reclamo}'

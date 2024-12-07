@@ -7,6 +7,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User, Group #uso el usuario de Django
 from datetime import date
 from django.contrib import messages
+from .models import Reclamo
+from .forms import ReclamoForm
 
 #-------------------------------
 #Daniel Avelar  INICIO
@@ -718,3 +720,25 @@ def listar_pedidos(request):
     pedidos = Pedido.objects.filter(cliente=request.user).order_by('-fecha_pedido')
     return render(request, 'cliente/listar_pedidos.html', {'pedidos': pedidos})
 
+    return render(request, 'cliente/ver_carrito.html', {'items_carrito': items_carrito, 'total': total})
+
+@login_required
+@user_passes_test(es_cliente)
+def realizar_reclamo(request):
+    if request.method == 'POST':
+        form = ReclamoForm(request.POST)
+        if form.is_valid():
+            reclamo = form.save(commit=False)
+            reclamo.cliente = request.user
+            reclamo.save()
+            messages.success(request, 'Reclamo enviado con éxito.')
+            return redirect('inicio')
+    else:
+        form = ReclamoForm()
+    return render(request, 'cliente/reclamo.html', {'form': form})
+
+@login_required
+@user_passes_test(es_administrador)
+def ver_reclamos(request):
+    reclamos = Reclamo.objects.all().select_related('cliente')
+    return render(request, 'negocio/ver_reclamos.html', {'reclamos': reclamos})
