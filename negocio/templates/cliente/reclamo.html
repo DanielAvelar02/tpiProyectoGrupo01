@@ -11,6 +11,7 @@
       {% csrf_token %}
       {{ form.as_p }}
       <button type="submit" class="btn btn-primary">Enviar Reclamo</button>
+      <a href="{% url 'inicio' %}" class="btn btn-secondary">Cancelar</a>
     </form>
   </div>
 {% endblock %}
