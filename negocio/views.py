@@ -13,6 +13,11 @@ from .forms import ReclamoForm
 #-------------------------------
 #Daniel Avelar  INICIO
 #-------------------------------
+def custom_404(request, exception):
+    return render(request, '404.html', status=404)
+
+handler404 = custom_404
+
 def custom_login(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
