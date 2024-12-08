@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'negocio/static'),
+    os.path.join(BASE_DIR, 'negocio', 'static'),
 ]
 
 
@@ -24,19 +24,19 @@ PWA_APP_START_URL = '/'
 PWA_APP_STATUS_BAR_COLOR = 'default'
 PWA_APP_ICONS = [
 	{
-		'src': 'static/images/icon-512x512.png',
+		'src': 'static/images/favicon.png',
 		'sizes': '512x512'
 	}
 ]
 PWA_APP_ICONS_APPLE = [
 	{
-		'src': 'static/images/icon-512x512.png',
+		'src': 'static/images/favicon.png',
 		'sizes': '512x512'
 	}
 ]
 PWA_APP_SPLASH_SCREEN = [
 	{
-		'src': 'static/images/icon.png',
+		'src': 'static/images/favicon.png',
 		'media': '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)'
 	}
 ]

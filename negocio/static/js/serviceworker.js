@@ -1,13 +1,17 @@
-var staticCacheName = 'djangopwa-v1';
+var staticCacheName = 'djangopwa-v3';
 
 self.addEventListener('install', function(event) {
     event.waitUntil(
         caches.open(staticCacheName).then(function(cache) {
             return cache.addAll([
                 '/',
-                '/static/css/style.css',
-                '/static/js/main.js',
-                // Agrega aquí más recursos para cachear
+                '/static/manifest.json',
+                '/static/images/favicon.png',
+                'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css',
+                'https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css',
+                'https://code.jquery.com/jquery-3.5.1.slim.min.js',
+                'https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js',
+                'https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'
             ]);
         })
     );
@@ -29,16 +33,25 @@ self.addEventListener('activate', function(event) {
 });
 
 self.addEventListener('fetch', function(event) {
-    var requestUrl = new URL(event.request.url);
-    if (requestUrl.origin === location.origin) {
-        if ((requestUrl.pathname === '/')) {
-            event.respondWith(caches.match(''));
-            return;
-        }
-    }
     event.respondWith(
-        caches.match(event.request).then(function(response) {
-            return response || fetch(event.request);
-        })
+        fetch(event.request)
+            .then(function(response) {
+                // Si la solicitud fue exitosa, la almacenamos en caché
+                if (response.status === 200) {
+                    const responseClone = response.clone();
+                    caches.open(staticCacheName)
+                        .then(function(cache) {
+                            cache.put(event.request, responseClone);
+                        });
+                }
+                return response;
+            })
+            .catch(function() {
+                // Si falla la solicitud, intentamos recuperarla del caché
+                return caches.match(event.request)
+                    .then(function(response) {
+                        return response || caches.match('/');
+                    });
+            })
     );
 });

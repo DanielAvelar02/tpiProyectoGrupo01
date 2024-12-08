@@ -16,6 +16,7 @@
     <!-- Otros enlaces y meta etiquetas -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon" /> <!-- Asegúrate de que favicon.ico exista -->
     <style>
       /* Aplica los colores del negocio a la plantilla */
       :root {
@@ -152,6 +153,24 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src='negocio/static/js/serviceWorker.js'></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', async function() {
+          try {
+            // Primero desregistramos cualquier service worker existente
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            for(let registration of registrations) {
+              await registration.unregister();
+            }
+            
+            // Luego registramos el nuevo service worker
+            const registration = await navigator.serviceWorker.register("{% static 'js/serviceworker.js' %}");
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          } catch(err) {
+            console.log('ServiceWorker registration failed: ', err);
+          }
+        });
+      }
+    </script>
   </body>
 </html>
