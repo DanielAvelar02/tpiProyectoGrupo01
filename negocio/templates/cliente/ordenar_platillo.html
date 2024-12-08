@@ -9,25 +9,31 @@
   <main class="container d-flex justify-content-center align-items-center" style="min-height: 80vh; margin-top: -50px;">
     <div class="row bg-white shadow rounded p-4 w-100" style="max-width: 1200px;">
       <!-- Detalle de los productos -->
+
       <div class="col-md-6 mb-4">
         <h3>Detalles</h3>
         <p class="mt-4 fs-5 text-end">
-          <strong>{{ platillo.nombre }}</strong></p>
-        <p class="mt-4 fs-5 text-end"><strong>Total: ${{ platillo.precio }}</strong></p>
+          <strong>{{ platillo.nombre }}</strong>
+        </p>
+        <p class="mt-4 fs-5 text-end">
+          <strong>Total: ${{ platillo.precio }}</strong>
+        </p>
         {% if cantidad_disponible != 0 %}
-        <p class="mt-4 fs-5 text-end"><strong>Cantidad Disponible: {{ cantidad_disponible }}</strong></p>
+          <p class="mt-4 fs-5 text-end">
+            <strong>Cantidad Disponible: {{ cantidad_disponible }}</strong>
+          </p>
         {% else %}
-        <p class="mt-4 fs-5 text-end text-danger"><strong>Producto Agotado</strong></p>
+          <p class="mt-4 fs-5 text-end text-danger">
+            <strong>Producto Agotado</strong>
+          </p>
         {% endif %}
       </div>
       <!-- Imagen y botón de pago -->
       <div class="col-md-6 d-flex flex-column align-items-center">
-        <div class="mb-4">
-          <img src="{{ platillo.imagen.url }}" alt="Imagen del producto" class="img-fluid rounded" style="max-width: 300px; max-height: 300px;">
-        </div>
+          <img src="{{ platillo.imagen }}" alt="Imagen del producto" class="mb-4 img-fluid rounded" style="max-width: 200px; max-height: 200px;" />
         <form action="{% url 'agregar_al_carrito' platillo.id %}" method="POST" class="d-inline-block">
           {% csrf_token %}
-          <input type="number" name="cantidad" min="1" max="{{ cantidad_disponible }}" value="1" class="form-control mb-2" required>
+          <input type="number" name="cantidad" min="1" max="{{ cantidad_disponible }}" value="1" class="form-control mb-2" required />
           <button type="submit" class="btn btn-primary mb-2">Agregar al Carrito</button>
         </form>
         <div class="d-flex justify-content-center">

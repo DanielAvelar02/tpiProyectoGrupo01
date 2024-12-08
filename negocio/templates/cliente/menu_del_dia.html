@@ -8,16 +8,14 @@
   <h1 class="text-center my-4">Menú del Día</h1>
   <main class="container shadow-lg p-4 rounded bg-white my-5">
     <div class="d-flex justify-content-end my-4">
-      <a href="{% url 'ver_carrito' %}" class="btn btn-success btn-lg">
-        <i class="fas fa-shopping-cart"></i> Ver Carrito
-      </a>
+      <a href="{% url 'ver_carrito' %}" class="btn btn-success btn-lg"><i class="fas fa-shopping-cart"></i> Ver Carrito</a>
     </div>
     <section class="row gy-4 justify-content-center">
       {% if productos_info %}
         {% for item in productos_info %}
           <div class="col-md-4 d-flex justify-content-center my-3">
             <div class="card text-center shadow-sm p-3 border-0" style="width: 18rem; transition: transform 0.2s, box-shadow 0.2s;">
-              <img src="{{ item.producto.imagen.url }}" alt="{{ item.producto.nombre }}" class="card-img-top img-fluid" style="width: 150px; height: 150px; object-fit: cover; margin: 0 auto;">
+              <img src="{{ item.producto.imagen }}" alt="{{ item.producto.nombre }}" class="card-img-top img-fluid" style="width: 150px; height: 150px; object-fit: cover; margin: 0 auto;" />
               <div class="card-body">
                 <h5 class="card-title">{{ item.producto.nombre }}</h5>
                 <a class="btn btn-primary mt-3 w-100" href="{% url 'ordenar_platillo' item.producto.id %}">Ver Detalles</a>

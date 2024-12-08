@@ -1,9 +1,10 @@
 from django.db import models
+from datetime import datetime
 from django.contrib.auth.models import User
 
 class Negocio(models.Model):
     nombre = models.CharField(max_length=100)
-    logo = models.ImageField(upload_to='logos/')
+    logo = models.URLField(blank=True, null=True, help_text="URL de la imagen del logo")
     color_primario = models.CharField(max_length=7, default='#FFFFFF', help_text="Código hexadecimal, por ejemplo: #FFFFFF")
     color_secundario = models.CharField(max_length=7, default='#FFFFFF', help_text="Código hexadecimal, por ejemplo: #FFFFFF")
     color_terciario = models.CharField(max_length=7, default='#FFFFFF', help_text="Código hexadecimal, por ejemplo: #FFFFFF")
@@ -53,7 +54,7 @@ class Producto(models.Model):
     cantidad_disponible = models.IntegerField()
     activo = models.BooleanField(default=True)
     negocio = models.ForeignKey(Negocio, on_delete=models.CASCADE)
-    imagen = models.ImageField(upload_to='productos/', null=True, blank=True)  # Nuevo campo de imagen
+    imagen = models.URLField(blank=True, null=True, help_text="URL de la imagen del producto")
 
     def __str__(self):
         return self.nombre

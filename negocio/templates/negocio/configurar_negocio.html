@@ -9,11 +9,18 @@
 <div class="container d-flex justify-content-center align-items-center my-5">
   <div class="card shadow-lg p-4" style="max-width: 600px; width: 100%;">
     <h2 class="text-center mb-4">Configurar Negocio</h2>
+    {% if form.non_field_errors %}
+        <ul>
+            {% for error in form.non_field_errors %}
+                <li class="text-danger text-center">{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
     <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
       <div class="mb-3">
         <!-- Aquí se renderizan los campos del formulario -->
-        {{ form.as_p }}
+        {{ form.as_p }}  
       </div>
       <button type="submit" class="btn btn-primary w-100">Guardar</button>
     </form>

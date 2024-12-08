@@ -8,16 +8,18 @@ from .models import Negocio
 
 @receiver(pre_save, sender=Negocio)
 def delete_old_logo(sender, instance, **kwargs):
-    if instance.pk:
-        try:
-            old_logo = Negocio.objects.get(pk=instance.pk).logo
-        except Negocio.DoesNotExist:
-            return
-        else:
-            new_logo = instance.logo
-            if old_logo and old_logo.url != new_logo.url:
-                if os.path.isfile(old_logo.path):
-                    os.remove(old_logo.path)
+    # Obtener el negocio actual antes de guardar
+    try:
+        old_logo = sender.objects.get(pk=instance.pk).logo
+    except sender.DoesNotExist:
+        old_logo = None  # No hay negocio previo
+
+    new_logo = instance.logo  # Nuevo logo que se está guardando
+
+    # Comparar directamente los valores de las URL
+    if old_logo and old_logo != new_logo:
+        # Aquí no se necesita eliminar el archivo porque estamos usando URLs
+        print(f"Cambiando logo de {old_logo} a {new_logo}")
 
 @receiver(post_migrate)
 def create_user_groups(sender, **kwargs):
