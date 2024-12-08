@@ -1,0 +1,17 @@
+
+{
+    "name": "Los3Cerditos",
+    "short_name": "Los3Cerditos",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#000000",
+    "scope": "/",
+    "icons": [
+        {
+            "src": "/static/images/favicon.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

@@ -13,6 +13,5 @@ urlpatterns = [
     path('negocio/', include('negocio.urls')), #Rutas de la app negocio
     path('registrar-cliente/', negocio_views.registrar_cliente, name='registrar_cliente'), #Ruta para registrar un cliente nuevo
     path('despacho_pedidos/', negocio_views.despacho_pedidos, name='despacho_pedidos'), #Ruta para despachar pedidos
-
+    path('', include('pwa.urls'))
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # Ruta para servir archivos multimedia
-
