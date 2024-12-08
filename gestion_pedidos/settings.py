@@ -51,7 +51,7 @@ PWA_APP_LANG = 'en-US'
 SECRET_KEY = 'django-insecure-es+9xi+=h8$1o-l2e96a6plub_ko*9zqkiaox=#0hg0i02ctox'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 #Cuando la aplicacion este local, descomentar la siguiente linea
 ALLOWED_HOSTS = ['127.0.0.1']
