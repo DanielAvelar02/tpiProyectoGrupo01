@@ -5,9 +5,25 @@ self.addEventListener('install', function(event) {
         caches.open(staticCacheName).then(function(cache) {
             return cache.addAll([
                 '/',
-                'accounts/login/',
+                '/static/css/style.css',
+                '/static/js/main.js',
                 // Agrega aquí más recursos para cachear
             ]);
+        })
+    );
+});
+
+self.addEventListener('activate', function(event) {
+    var cacheWhitelist = [staticCacheName];
+    event.waitUntil(
+        caches.keys().then(function(cacheNames) {
+            return Promise.all(
+                cacheNames.map(function(cacheName) {
+                    if (cacheWhitelist.indexOf(cacheName) === -1) {
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
         })
     );
 });
