@@ -15,16 +15,16 @@ SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'RENDER' not in os.environ
 
-""" #Cuando la aplicacion este local, descomentar la siguiente linea
+#Cuando la aplicacion este local, descomentar la siguiente linea
 ALLOWED_HOSTS = []
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME) """
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 #Cuando la aplicacion este en produccion, descomentar la siguiente linea
-ALLOWED_HOSTS = ['tpiproyectogrupo01.onrender.com']
-
+""" ALLOWED_HOSTS = ['tpiproyectogrupo01.onrender.com']
+ """
 # settings.py
 LOGIN_URL = 'login'  # Asegura que se redirija a la URL del login personalizado
 LOGIN_REDIRECT_URL = '/'  # Redirige a la página de inicio después de un login exitoso
@@ -88,7 +88,7 @@ if not DEBUG:
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     # Enable the WhiteNoise storage backend, which compresses static files to reduce disk use
     # and renames the files with unique names for each version to support long-term caching
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 WSGI_APPLICATION = 'gestion_pedidos.wsgi.application'
 
@@ -150,8 +150,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+""" STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static') """
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
