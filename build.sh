@@ -12,7 +12,7 @@ python manage.py collectstatic --no-input
 python manage.py migrate
 
 #Crear superusuario
-python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@example.com', '123456789')"
+#python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('admin', 'admin@example.com', '123456789')"
 
 #Create a new user
-python manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_user('administrador', password='123456789')"
+#python manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_user('administrador', password='123456789')"
