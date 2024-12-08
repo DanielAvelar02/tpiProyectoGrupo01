@@ -1,5 +1,5 @@
 from django import forms
-from .models import Negocio, Producto, MenuDelDia
+from .models import Negocio, Producto, MenuDelDia, Reclamo
 from django.contrib.auth.models import User, Group
 from datetime import datetime, date
 
@@ -67,16 +67,32 @@ class EditarUsuarioForm(forms.ModelForm):
         
         if commit:
             user.save()
-            # Asignar el grupo después de guardar el usuario
-            if self.cleaned_data["grupo"]:
+            # Aquí verificamos si el campo 'grupo' existe en 'cleaned_data' antes de asignarlo
+            if 'grupo' in self.cleaned_data and self.cleaned_data['grupo']:
                 user.groups.set([self.cleaned_data["grupo"]])
+            else:
+                # Si no se seleccionó un grupo, podemos asignar el grupo por defecto o el grupo actual
+                # Deberías manejar el caso si no se proporciona un grupo de manera adecuada.
+                pass
         return user
   
 # Formulario para configurar el negocio
 class NegocioForm(forms.ModelForm):
-    color_primario = forms.CharField(widget=forms.TextInput(attrs={'type': 'color'}), label="Color de Fondo")
-    color_secundario = forms.CharField(widget=forms.TextInput(attrs={'type': 'color'}), label="Color de Textos")
-    color_terciario = forms.CharField(widget=forms.TextInput(attrs={'type': 'color'}), label="Color Barra Navegacion")
+    color_primario = forms.CharField(
+        widget=forms.TextInput(attrs={'type': 'color'}),
+        label="Color de Fondo",
+        initial='#FFFFFF'  # Valor predeterminado (blanco en este caso)
+    )
+    color_secundario = forms.CharField(
+        widget=forms.TextInput(attrs={'type': 'color'}),
+        label="Color de Textos",
+        initial='#000000'  # Valor predeterminado (negro en este caso)
+    )
+    color_terciario = forms.CharField(
+        widget=forms.TextInput(attrs={'type': 'color'}),
+        label="Color Barra Navegacion",
+        initial='#FF5733'  # Valor predeterminado (un color naranja en este caso)
+    )
 
     class Meta:
         model = Negocio
@@ -162,3 +178,14 @@ class CrearMenuForm(forms.Form):
         cleaned_data['productos_con_cantidad'] = productos_con_cantidad
 
         return cleaned_data
+
+class ReclamoForm(forms.ModelForm):
+    class Meta:
+        model = Reclamo
+        fields = ['texto']
+        widgets = {
+            'texto': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
+        }
+        labels = {
+            'texto': 'Descripción del Reclamo',
+        }

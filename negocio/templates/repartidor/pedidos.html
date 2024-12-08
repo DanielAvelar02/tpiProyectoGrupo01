@@ -25,7 +25,7 @@
         <td>{{ pedido.direccion_entrega }}</td>
         <td>{{ pedido.total }}</td>
         <td>
-          <a href="{% url 'seguimiento_pedido' %}" class="btn btn-primary">Realizar entrega</a>
+          <a href="{% url 'listar_pedidos' %}" class="btn btn-primary">Realizar entrega</a>
         </td>
       </tr>
       {% endfor %}

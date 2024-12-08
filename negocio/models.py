@@ -11,11 +11,41 @@ class Negocio(models.Model):
     programa_lealtad_activado = models.BooleanField(default=True)
     cupones_activado = models.BooleanField(default=True)
 
-class Usuario(models.Model):
-    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
-    rol = models.CharField(max_length=50)
-    fecha_registro = models.DateTimeField(auto_now_add=True)
+class Perfil(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    puntos = models.IntegerField(default=0)  # Puntos acumulados por el cliente
+    
+    def __str__(self):
+        return self.user.username
+
+    def agregar_puntos(self, puntos):
+        """
+        Agrega puntos al perfil del usuario si el programa de lealtad está activo.
+        """
+        if self.user.negocio.programa_lealtad_activado:
+            self.puntos += puntos
+            self.save()
+
+    def verificar_vencimiento_puntos(self):
+        """
+        Aquí puedes agregar lógica si deseas que los puntos tengan una fecha de vencimiento.
+        """
+        pass
+
+class Cupon(models.Model):
     negocio = models.ForeignKey(Negocio, on_delete=models.CASCADE)
+    codigo = models.CharField(max_length=50, unique=True)
+    descuento = models.DecimalField(max_digits=5, decimal_places=2)  # Ejemplo: 10.00 es 10%
+    fecha_inicio = models.DateField()
+    fecha_vencimiento = models.DateField()
+    activo = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.codigo
+
+    def esta_vigente(self):
+        return self.activo and self.fecha_vencimiento >= datetime.date.today()
+
 
 class Producto(models.Model):
     nombre = models.CharField(max_length=100)
@@ -23,6 +53,7 @@ class Producto(models.Model):
     cantidad_disponible = models.IntegerField()
     activo = models.BooleanField(default=True)
     negocio = models.ForeignKey(Negocio, on_delete=models.CASCADE)
+    imagen = models.ImageField(upload_to='productos/', null=True, blank=True)  # Nuevo campo de imagen
 
     def __str__(self):
         return self.nombre
@@ -58,11 +89,19 @@ class DetallePedido(models.Model):
     precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
 
 class Repartidor(models.Model):
-    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, limit_choices_to={'rol': 'Repartidor'})
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, limit_choices_to={'rol': 'Repartidor'})
     estado_activado = models.BooleanField(default=False)
 
 class Fidelizacion(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, limit_choices_to={'rol': 'Cliente'})
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'rol': 'Cliente'})
     tipo = models.CharField(max_length=50)
     cantidad = models.IntegerField()
     vencimiento = models.DateField()
+
+class Reclamo(models.Model):
+    cliente = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'groups__name': 'Cliente'})
+    fecha_reclamo = models.DateTimeField(auto_now_add=True)
+    texto = models.TextField()
+
+    def __str__(self):
+        return f'Reclamo de {self.cliente.username} el {self.fecha_reclamo}'

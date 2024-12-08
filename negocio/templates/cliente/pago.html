@@ -10,76 +10,94 @@
     <div class="row shadow rounded p-4 w-100 bg-white" style="max-width: 1200px;">
       <!-- Mapa -->
       <div class="col-md-6 text-center">
+        <input type="text" id="buscarDireccion" class="form-control mb-3" placeholder="Ingresa tu dirección">
+        <button id="buscar" class="btn btn-primary mb-3">Buscar Dirección</button>
         <div id="map" class="border rounded mb-3" style="width: 100%; height: 300px;"></div>
+        <button id="confirmarDireccion" class="btn btn-success mb-3">Confirmar Dirección</button>
         <p>Selecciona tu ubicación</p>
       </div>
       <!-- Formulario -->
       <div class="col-md-6">
         <h3>Información</h3>
-        <form id="pagoForm">
+        <form method="POST" action="{% url 'pagar' %}">
+          {% csrf_token %}
           <div class="mb-3">
-            <label for="nombre" class="form-label">Nombre:</label>
-            <input type="text" id="nombre" name="nombre" class="form-control" required>
+            <label for="direccion" class="form-label">Dirección:</label>
+            <input type="text" id="direccion" name="direccion" class="form-control" required>
           </div>
-
-          <div class="mb-3">
-            <label for="apellido" class="form-label">Apellido:</label>
-            <input type="text" id="apellido" name="apellido" class="form-control" required>
-          </div>
-
-          <div class="mb-3">
-            <label for="telefono" class="form-label">Teléfono:</label>
-            <input type="tel" id="telefono" name="telefono" class="form-control" required>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Método de pago:</label>
-            <div class="form-check">
-              <input type="radio" id="efectivo" name="metodo" value="efectivo" class="form-check-input" required>
-              <label for="efectivo" class="form-check-label">Efectivo</label>
-            </div>
-            <div class="form-check">
-              <input type="radio" id="tarjeta" name="metodo" value="tarjeta" class="form-check-input">
-              <label for="tarjeta" class="form-check-label">
-                Tarjeta
-                <button type="button" class="btn btn-outline-secondary btn-sm ms-2">Añadir info pago</button>
-              </label>
-            </div>
-          </div>
-
-          <button type="submit" class="btn btn-primary w-100 mt-3">Pagar</button>
+          <button type="submit" class="btn btn-primary w-100">Confirmar Pedido</button>
         </form>
       </div>
     </div>
   </main>
 
   <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
   <script>
-    // Inicializar el mapa centrado en San Salvador
-    const map = L.map('map').setView([13.692940, -89.218191], 13); // Coordenadas de San Salvador
+    // Inicializar el mapa
+    var map = L.map('map').setView([51.505, -0.09], 13);
 
-    // Agregar el mapa base desde OpenStreetMap
+    // Añadir capa de mapa de OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    // Agregar un marcador inicial en San Salvador
-    const marker = L.marker([13.692940, -89.218191], { draggable: true }).addTo(map);
+    // Añadir marcador
+    var marker = L.marker([51.505, -0.09], {draggable: true}).addTo(map);
 
-    // Escuchar eventos de arrastre del marcador
-    marker.on('dragend', function (e) {
-        const position = marker.getLatLng();
-        alert(`Ubicación seleccionada:\nLat: ${position.lat}\nLng: ${position.lng}`);
+    document.getElementById('buscar').addEventListener('click', function() {
+      var address = document.getElementById('buscarDireccion').value;
+      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${address}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.length > 0) {
+            var latlng = [data[0].lat, data[0].lon];
+            map.setView(latlng, 13);
+            marker.setLatLng(latlng);
+          } else {
+            alert('No se encontró la dirección.');
+          }
+        });
     });
 
-    // Redirigir a la página de seguimiento del pedido al enviar el formulario
-    document.getElementById('pagoForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        window.location.href = "{% url 'seguimiento_pedido' %}";
+    // Actualizar el campo de dirección con la ubicación seleccionada
+    map.on('click', function(e) {
+      marker.setLatLng(e.latlng);
     });
+
+    // Actualizar el campo de dirección cuando se mueve el marcador
+    marker.on('dragend', function() {
+      var latlng = marker.getLatLng();
+      updateAddress(latlng);
+    });
+
+    document.getElementById('confirmarDireccion').addEventListener('click', function() {
+      var latlng = marker.getLatLng();
+      updateAddress(latlng);
+    });
+
+    function updateAddress(latlng) {
+      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latlng.lat}&lon=${latlng.lng}`)
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('direccion').value = data.display_name;
+        });
+    }
+
+    // Obtener la ubicación del dispositivo automáticamente
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        var latlng = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        map.setView(latlng, 13);
+        marker.setLatLng(latlng);
+        updateAddress(latlng);
+      });
+    }
   </script>
 {% endblock %}

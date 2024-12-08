@@ -1,16 +1,49 @@
 {% extends 'base_generic.html' %}
-
 {% block title %}
   Lealtad
 {% endblock %}
-
 {% block content %}
   <div class="container mt-5">
     <div class="row">
       <div class="col-md-12">
-        <h1 class="display-4">Vista en proceso</h1>
-        <p class="lead">Programa de lealtad</p>
-        <a href="{% url 'inicio' %}" class="btn btn-primary">Volver al inicio</a>
+        <h1 class="display-4">Programa de Lealtad - Administrador</h1>
+        <p class="lead">Gestiona el programa de lealtad y los cupones de descuento.</p>
+        
+        <!-- Sección para activar/desactivar programa de lealtad -->
+        <div class="card mb-4">
+          <div class="card-header">
+            Programa de Lealtad
+          </div>
+          <div class="card-body">
+            <p class="card-text">Activa o desactiva el programa de lealtad. Los clientes ganan puntos por sus compras.</p>
+            <form method="post" action="#">
+              {% csrf_token %}
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="lealtadSwitch" name="lealtad" {% if lealtad_activo %}checked{% endif %}>
+                <label class="form-check-label" for="lealtadSwitch">Activar Programa de Lealtad</label>
+              </div>
+              <button type="submit" class="btn btn-primary mt-3">Guardar Cambios</button>
+            </form>
+          </div>
+        </div>
+        <!-- Sección para activar/desactivar cupones de descuento -->
+        <div class="card mb-4">
+          <div class="card-header">
+            Cupones de Descuento
+          </div>
+          <div class="card-body">
+            <p class="card-text">Activa o desactiva los cupones de descuento. Los cupones existentes seguirán funcionando hasta su vencimiento.</p>
+            <form method="post" action="#">
+              {% csrf_token %}
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="cuponesSwitch" name="cupones" {% if cupones_activo %}checked{% endif %}>
+                <label class="form-check-label" for="cuponesSwitch">Activar Cupones de Descuento</label>
+              </div>
+              <button type="submit" class="btn btn-primary mt-3">Guardar Cambios</button>
+            </form>
+          </div>
+        </div>
+        <a href="{% url 'inicio' %}" class="btn btn-secondary">Volver al inicio</a>
       </div>
     </div>
   </div>
