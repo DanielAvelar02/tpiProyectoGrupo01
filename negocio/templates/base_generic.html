@@ -46,7 +46,7 @@
       <a class="navbar-brand" href="/">
         {% if request.user.is_authenticated and negocio %}
           {% if negocio.logo %}
-            <img src="{{ negocio.logo.url }}" alt="Logo de {{ negocio.nombre }}" class="business-logo" />
+            <img src="{{ negocio.logo }}" alt="Logo de {{ negocio.nombre }}" class="business-logo" />
           {% endif %}
           <span>{{ negocio.nombre }}</span>
         {% else %}

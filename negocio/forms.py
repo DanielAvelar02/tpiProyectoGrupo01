@@ -93,6 +93,10 @@ class NegocioForm(forms.ModelForm):
         label="Color Barra Navegacion",
         initial='#FF5733'  # Valor predeterminado (un color naranja en este caso)
     )
+    logo = forms.URLField(
+        widget=forms.URLInput(attrs={'placeholder': 'URL del logo'}),
+        label="URL del Logo"
+    )
 
     class Meta:
         model = Negocio

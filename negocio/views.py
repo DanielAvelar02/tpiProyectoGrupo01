@@ -103,7 +103,7 @@ def es_administrador(user):
 def negocio_config(request):
     negocio = Negocio.objects.first()  # Suponemos que solo hay un negocio
     if request.method == "POST":
-        form = NegocioForm(request.POST, request.FILES, instance=negocio)
+        form = NegocioForm(request.POST, instance=negocio)
         if form.is_valid():
             form.save()
             return redirect('inicio')  # Redirige al inicio después de guardar
@@ -255,12 +255,8 @@ def crear_producto(request):
         nombre = request.POST.get('nombre')
         precio = request.POST.get('precio')
         cantidad_disponible = request.POST.get('cantidad')
-        imagen = request.FILES.get('imagen')
+        imagen = request.POST.get('imagen')  # Obtener la URL
         negocio = Negocio.objects.first()
-
-        # Validar que se suba una imagen
-        if not imagen:
-            return render(request, 'producto/crear_producto.html', {'accion': accion, 'action': action, 'error': 'Debe subir una imagen del producto'})
 
         # Validar que no exista un producto con el mismo nombre
         if Producto.objects.filter(nombre=nombre).exists():
@@ -271,8 +267,18 @@ def crear_producto(request):
                 precio = float(precio)
                 cantidad_disponible = int(cantidad_disponible)
             except ValueError:
-                return render(request, 'producto/crear_producto.html', {'accion': accion, 'action': action,'error': 'El precio debe ser un número decimal y la cantidad debe ser un número entero'})
-            producto = Producto(nombre=nombre, precio=precio, cantidad_disponible=cantidad_disponible, negocio=negocio, imagen=imagen)
+                return render(request, 'producto/crear_producto.html', {
+                    'accion': accion, 
+                    'action': action,
+                    'error': 'El precio debe ser un número decimal y la cantidad debe ser un número entero'
+                })
+            producto = Producto(
+                nombre=nombre,
+                precio=precio,
+                cantidad_disponible=cantidad_disponible,
+                imagen=imagen,# Guardar la URL
+                negocio=negocio
+            )            
             producto.save()
             return redirect('listar_productos')
         else:
@@ -299,7 +305,8 @@ def editar_producto(request, producto_id):
         nombre = request.POST.get('nombre')
         precio = request.POST.get('precio')
         cantidad_disponible = request.POST.get('cantidad')
-        imagen = request.FILES.get('imagen')
+        imagen = request.POST.get('imagen')  # Obtener la URL
+
         
         # Validar que no exista un producto con el mismo nombre (excepto el actual)
         if Producto.objects.filter(nombre=nombre).exclude(id=producto_id).exists():
@@ -314,12 +321,9 @@ def editar_producto(request, producto_id):
             producto.nombre = nombre
             producto.precio = precio
             producto.cantidad_disponible = cantidad_disponible
-            if imagen:
-                # Eliminar la imagen anterior si existe
-                if producto.imagen:
-                    if os.path.isfile(producto.imagen.path):
-                        os.remove(producto.imagen.path)
-                producto.imagen = imagen
+            producto.imagen = imagen  # Guardar la URL actualizada
+
+         
             producto.save()
             return redirect('listar_productos')
         else:
